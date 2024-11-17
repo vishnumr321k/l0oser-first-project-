@@ -1,0 +1,24 @@
+{
+  "name": "l0oser",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "server"
+  },
+  "author": "Vishnu M R",
+  "license": "ISC",
+  "description": "own project",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.8.1",
+    "mongose": "^0.0.2-security",
+    "nocache": "^4.0.0"
+  }
+}
