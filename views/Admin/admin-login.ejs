@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Admin Login</title>
     <style>
         * {
             margin: 0;
@@ -14,9 +14,8 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/placeholder.svg?height=1080&width=1920');
-            background-size: cover;
-            background-position: center;
+            background: #000; /* Black background */
+            color: #FFF; /* White text */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -25,233 +24,192 @@
         .login-container {
             max-width: 400px;
             margin: 2rem auto;
-            background: white;
+            background: #FFF; /* White container */
+            color: #000; /* Black text inside */
             padding: 2rem;
             border-radius: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            text-align: right;
-            margin-bottom: 2rem;
-        }
-
-        .logo img {
-            height: 24px;
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.2);
         }
 
         h1 {
             font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #000;
-        }
-
-        p {
-            color: #666;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            color: #000; /* Black heading */
+            text-align: center;
         }
 
         .input-group {
-            margin-bottom: 1rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #666;
-            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
         }
 
         input {
             width: 100%;
             padding: 0.75rem;
-            border: 1px solid #ddd;
+            border: 1px solid #333; /* Gray border */
             border-radius: 8px;
+            margin-bottom: 0.5rem;
             font-size: 1rem;
+            background: #ffffff; /* Black background for inputs */
+            color: #000000; /* White text for inputs */
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #FFF; /* White border on focus */
+            outline: black;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #000; /* Black button */
+            color: #FFF; /* White text */
+            border: 1px solid #FFF; /* White border */
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #FFF; /* White background on hover */
+            color: #000; /* Black text on hover */
         }
 
         .social-login {
             display: flex;
             gap: 1rem;
-            margin-top: 2rem;
+            margin-bottom: 1rem;
         }
 
         .social-btn {
             flex: 1;
             padding: 0.75rem;
-            border: 1px solid #ddd;
+            border: 1px solid #333; /* Gray border */
             border-radius: 8px;
-            background: white;
+            background: #000; /* Black background */
+            color: #FFF; /* White text */
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
             cursor: pointer;
-            transition: background-color 0.2s;
+            font-weight: bold;
+            transition: background-color 0.2s, color 0.2s;
         }
 
         .social-btn:hover {
-            background: #f5f5f5;
+            background: #FFF; /* White background on hover */
+            color: #000; /* Black text on hover */
         }
 
-        .social-btn img {
-            height: 20px;
-        }
-
-        .signup-link {
+        .links {
             text-align: center;
-            margin-top: 1.5rem;
-            color: #666;
+            color: #BBB; /* Gray text for links */
             font-size: 0.9rem;
         }
 
-        .signup-link a {
-            color: #000;
+        .links a {
+            color: #FFF; /* White links */
             text-decoration: none;
-            font-weight: 500;
+            display: inline-block;
+            margin-top: 10px;
+            transition: color 0.3s;
+        }
+
+        .links a:hover {
+            color: #BBB; /* Gray links on hover */
         }
 
         footer {
             background: #000;
-            color: white;
-            padding: 3rem 2rem;
+            color: #FFF;
+            padding: 2rem;
             margin-top: auto;
+            text-align: center;
         }
 
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-        }
-
-        .footer-column h3 {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            color: #fff;
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-column ul li a {
-            color: #999;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-
-        .footer-column ul li a:hover {
-            color: #fff;
-        }
-
-        .payment-methods {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .payment-methods img {
-            height: 24px;
-            filter: brightness(0.8);
-        }
-
-        @media (max-width: 768px) {
-            .login-container {
-                margin: 1rem;
-                padding: 1.5rem;
-            }
+        .error-message {
+            color: red;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
         }
     </style>
 </head>
 <body>
     <main>
         <div class="login-container">
-            <div class="logo">
-                <img src="/placeholder.svg?height=24&width=60" alt="Logo">
-            </div>
-            <h1>Welcome back!</h1>
-            <p>Please enter your details to sign in</p>
-            <form action="/admin/signin" method="post">
-                
+            <h1>Admin Login</h1>
+
+            <form id="admin-login-form" method="post" action="/admin/signin">
                 <div class="input-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="admin-email" placeholder="Email" name="email" required>
+                    <div id="error-admin-email" class="error-message"></div>
                 </div>
+
                 <div class="input-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="admin-password" placeholder="Password" name="password" required>
+                    <div id="error-admin-password" class="error-message"></div>
                 </div>
-                <div class="social-login">
-                    <button type="button" class="social-btn">
-                        <img src="/placeholder.svg?height=20&width=20" alt="Google icon">
-                        Sign in with Google
-                    </button>
-                    <button type="button" class="social-btn">
-                        <img src="/placeholder.svg?height=20&width=20" alt="Apple icon">
-                        Sign in with Apple
-                    </button>
-                </div>
-                <button type="submit">Sign in</button>
-                <div class="signup-link">
-                    Don't have an account? <a href="#">Sign up</a>
-                </div>
+
+                <button type="submit" class="login-btn">Login</button>
             </form>
+
+            <div class="social-login">
+                <a href="/auth/google/admin" class="social-btn">Login with Google</a>
+            </div>
+
+            <div class="links">
+                <a href="/admin/forgot-password">Forgot Password?</a>
+            </div>
         </div>
     </main>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-column">
-                <h3>COMPANY</h3>
-                <ul>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Features</a></li>
-                    <li><a href="#">Works</a></li>
-                    <li><a href="#">Career</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>HELP</h3>
-                <ul>
-                    <li><a href="#">Customer Support</a></li>
-                    <li><a href="#">Delivery Details</a></li>
-                    <li><a href="#">Terms & Conditions</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>FAQ</h3>
-                <ul>
-                    <li><a href="#">Account</a></li>
-                    <li><a href="#">Manage Deliveries</a></li>
-                    <li><a href="#">Orders</a></li>
-                    <li><a href="#">Payments</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>RESOURCES</h3>
-                <ul>
-                    <li><a href="#">Free eBooks</a></li>
-                    <li><a href="#">Development Tutorial</a></li>
-                    <li><a href="#">How to - Blog</a></li>
-                    <li><a href="#">Youtube Playlist</a></li>
-                </ul>
-                <div class="payment-methods">
-                    <img src="/placeholder.svg?height=24&width=38" alt="Visa">
-                    <img src="/placeholder.svg?height=24&width=38" alt="Mastercard">
-                    <img src="/placeholder.svg?height=24&width=38" alt="PayPal">
-                    <img src="/placeholder.svg?height=24&width=38" alt="Apple Pay">
-                    <img src="/placeholder.svg?height=24&width=38" alt="Google Pay">
-                </div>
-            </div>
-        </div>
+        <p>&copy; 2024 Your Admin Dashboard. All rights reserved.</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('admin-login-form');
+            const emailInput = document.getElementById('admin-email');
+            const passwordInput = document.getElementById('admin-password');
+            const errorEmail = document.getElementById('error-admin-email');
+            const errorPassword = document.getElementById('error-admin-password');
+
+            form.addEventListener('submit', function (e) {
+                let valid = true;
+
+                // Reset error messages
+                errorEmail.style.display = 'none';
+                errorPassword.style.display = 'none';
+
+                // Validate email
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(emailInput.value.trim())) {
+                    errorEmail.style.display = 'block';
+                    errorEmail.innerHTML = 'Invalid email format';
+                    valid = false;
+                } else {
+                    errorEmail.style.display = 'none';
+                }
+
+                // Validate password
+                const password = passwordInput.value;
+                if (password.length < 8) {
+                    errorPassword.style.display = 'block';
+                    errorPassword.innerHTML = 'Password must be at least 8 characters long';
+                    valid = false;
+                } else {
+                    errorPassword.style.display = 'none';
+                }
+
+                if (!valid) {
+                    e.preventDefault();  // Prevent form submission
+                }
+            });
+        });
+    </script>
 </body>
 </html>

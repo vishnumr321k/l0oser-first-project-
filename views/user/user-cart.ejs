@@ -1,0 +1,328 @@
+<%- include('../partials/user/header3') %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+  .quantity-control {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+  }
+
+  .btn-quantity {
+      padding: 0 8px;
+      font-size: 16px;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      cursor: pointer;
+  }
+
+  .quantity-display {
+      font-weight: bold;
+  }
+
+  .empty-cart-container {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .empty-cart-icon {
+      font-size: 80px;
+      color: #ddd;
+      margin-bottom: 20px;
+  }
+
+  .empty-cart-text {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: 600;
+  }
+
+  .empty-cart-subtext {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 30px;
+  }
+
+  .shopping-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 25px;
+      background-color: #28a745;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+  }
+
+  .shopping-btn:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+  }
+
+  .shopping-btn i {
+      margin-right: 8px;
+  }
+</style>
+
+
+<main class="main">
+    <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                 
+                <a href="/home" rel="nofollow">Home</a>
+            
+            <span>
+                <a href="/product-list" rel="nofollow">shop</a>
+            </span>
+                <span></span> Your Cart
+            </div>
+        </div>
+    </div>
+    <section class="mt-50 mb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <% if (!cartProduct) { %>
+                        <div class="empty-cart-container">
+                            <div class="empty-cart-icon">
+                                <i class="fi-rs-shopping-cart"></i>
+                            </div>
+                            <h2 class="empty-cart-text"><%= message %></h2>
+                            <p class="empty-cart-subtext">Looks like you haven't added anything to your cart yet.</p>
+                            <a href="/" class="shopping-btn">
+                                <i class="fi-rs-shopping-bag"></i> Start Shopping
+                            </a>
+                        </div>
+                    <% } else { %>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% cartProduct.products.forEach(item => { %>
+                                    <tr>
+                                        <td>
+                                            <img src="/uploads/re-image/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>" width="50">
+                                            <p><%= item.productId.productName %></p>
+                                            
+                                        </td>
+                                        <td>₹ <%= item.productId.salePrice || item.productId.regularPrice %></td>
+                                     
+                                        <td class="quantity-control" style="height: 98px;">
+                                            <%if(item.productId.quantity === 0){%>
+                                                <p style="color: red;">Out of Stock..</p>
+                                            <%}else{%>
+                                              
+                                                <%if(item.quantity === 1){%>
+                                                    <button class="btn-quantity" onclick="updateQuantity('<%= item.productId._id %>', -1)" disabled>-</button>
+                                                    <%}else{%>
+                                                        <button class="btn-quantity" onclick="updateQuantity('<%= item.productId._id %>', -1)">-</button>
+                                                        <%}%>
+                                                    <span class="quantity-display"><%= item.quantity %></span>
+                                                    <button class="btn-quantity" onclick="updateQuantity('<%= item.productId._id %>', 1)">+</button>
+                                            <%}%>
+                                        </td>
+                                       
+                                            
+                                        <td>₹ <%= item.totalPrice %></td>
+                                        <td>
+                                            <button class="btn btn-danger" onclick="confirmRemove('<%= item.productId._id %>')">Remove</button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                        <div class="cart-action text-end">
+                            <a class="btn btn-success" href="/product-list">
+                                <i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping
+                            </a>
+                        </div>
+                        <div class="border p-md-4 p-30 border-radius cart-totals">
+                            <div class="heading_s1 mb-3">
+                                <h4>Cart Totals</h4>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td class="cart_total_label">Cart Subtotal</td>
+                                            <td class="cart_total_amount">
+                                                <span class="font-lg fw-900 text-brand" id="total-price">₹ <%= totalAmount %></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <%let outOfStock = false %>
+                            <% cartProduct.products.forEach(item => { %>
+                            <%if(item.productId.quantity === 0){%>
+                                    <% outOfStock = true %>
+                                <%}%>
+                                <%})%>
+                              <%if(outOfStock){%>
+                                <h3 style="color: red;">A product in the Cart is Out of Stock...</h3>
+                                <%}else{%>
+                                    <a href="/checkout" class="btn btn-success">
+                                        <input type="hidden" name="productId" value="<%= cartProduct._id %>">
+                                        <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut
+                                    </a>
+                                    <%}%>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </section>
+  </main>
+  
+  <script>
+    function confirmRemove(productId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to remove this item from the cart?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, remove it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                removeItem(productId);
+            }
+        });
+    }
+  
+    function updateQuantity(productId, change) {
+    fetch('/update-quantity', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, change }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.message) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Quantity is limited. Only 5.',
+                    text: data.message,
+                });
+            }
+
+          
+            const quantityDisplay = document.querySelector(`tr td button[onclick="updateQuantity('${productId}', 1)"]`).previousElementSibling;
+            quantityDisplay.textContent = data.updatedQuantity;
+
+            const totalPriceDisplay = document.querySelector(`tr td button[onclick="confirmRemove('${productId}')"]`).closest('tr').querySelector('td:nth-child(4)');
+            totalPriceDisplay.textContent = `₹ ${data.updatedTotalPrice}`;
+
+      
+            document.getElementById('total-price').textContent = `₹ ${data.updatedCartTotal}`;
+
+           
+            const decrementButton = document.querySelector(`tr td button[onclick="updateQuantity('${productId}', -1)"]`);
+            if (data.updatedQuantity <= 1) {
+                decrementButton.disabled = true;
+            } else {
+                decrementButton.disabled = false;
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: data.message || 'Failed to update quantity. Please try again.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error updating quantity:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'An error occurred while updating the quantity. Please try again.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    });
+}
+
+    function removeItem(productId) {
+    fetch('/remove-cart-item', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            
+            const itemRow = document.querySelector(`tr td button[onclick="confirmRemove('${productId}')"]`).closest('tr');
+            itemRow.remove();
+
+         
+            document.getElementById('total-price').textContent = `₹ ${data.updatedTotal}`;
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Removed!',
+                text: 'The item has been removed from your cart.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+
+            const remainingItems = document.querySelectorAll('tbody tr').length;
+            if (remainingItems === 0) {
+                document.querySelector('.col-12').innerHTML = `
+                    <div class="empty-cart-container">
+                        <div class="empty-cart-icon">
+                            <i class="fi-rs-shopping-cart"></i>
+                        </div>
+                        <h2 class="empty-cart-text">Your cart is empty</h2>
+                        <p class="empty-cart-subtext">Looks like you haven't added anything to your cart yet.</p>
+                        <a href="/" class="shopping-btn">
+                            <i class="fi-rs-shopping-bag"></i> Start Shopping
+                        </a>
+                    </div>
+                `;
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed!',
+                text: data.message || 'Failed to remove the item. Please try again.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error removing item:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'An error occurred while removing the item. Please try again.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    });
+}
+  </script>
+  <%- include('../partials/user/footer2') %>

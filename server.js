@@ -1,8 +1,9 @@
-const app =  require('./index');
-const env = require('dotenv').config();
+const app = require('./index');
 
-const PORT = 3000 || process.env.PORT;
+
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
-    console.log('The server is started');
+console.log('The Admin side :- http://localhost:3000/admin/signin');
+console.log('The User side :- http://localhost:3000/home');
 });

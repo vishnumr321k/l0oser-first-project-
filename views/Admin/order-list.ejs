@@ -1,0 +1,139 @@
+<%- include('../partials/admin/header') %>
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Order List </h2>
+            <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+        <div>
+            <input type="text" placeholder="Search order ID" class="form-control bg-white">
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                <div class="col-lg-4 col-md-6 me-auto"> 
+                    <form action="/admin/order-list" method="get"> 
+                        <input type="text" name="orderSearch" placeholder="Search..." class="form-control bg-white">
+                        <button type="submit" class="btn btn-primary mt-2">Search</button>
+                    </form>
+                 </div>
+                <div class="col-lg-2 col-6 col-md-3">
+                    <form action="/admin/order-list" method="get"> 
+                    <select class="form-select" name="status" onchange="this.form.submit()">
+                        <option value="">Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Proccessing">Proccessing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Deliverd">Deliverd</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="">Show all</option>
+                    </select>
+                    </form>
+                </div>
+                
+            </div>
+        </header> <!-- card-header end// -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Date</th>
+                            <th scope="col" class="text-end"> Action </th>
+                        </tr>
+                    </thead>
+                    <% orders.forEach(order => { %>
+                    <tbody>
+                        <tr>
+                            <td><%= order.orderId %></td>
+                            <td><b><%= order.userId.name %></b></td>
+                            <td><%= order.userId.email %></td>
+                            <td>₹<%= order.totalAmount %></td>
+                            <%if(order.status === 'Pending'){%>
+                            <td><span class="badge rounded-pill alert-warning" ><%= order.status %></span></td>
+                            <%}else if(order.status === 'Cancelled'){%>
+                                <td><span class="badge rounded-pill alert-danger" ><%= order.status %></span></td>
+                                <%}else if(order.status === 'Processing'){%>
+                                    <td><span class="badge rounded-pill alert-info" ><%= order.status %></span></td>
+                                    <%}else if(order.status === 'Shipped'){%>
+                                        <td><span class="badge rounded-pill alert-primary" ><%= order.status %></span></td>
+                                        <%}else if(order.status === 'Deliverd'){%>
+                                            <td><span class="badge rounded-pill alert-success" ><%= order.status %></span></td>
+                                            <%}else if(order.status === 'Return'){%>
+                                                <td><span class="badge rounded-info alert-info" ><%= order.status %></span></td>
+                                           
+                                <%}%>
+                            <td><%= order.orderDate.toLocaleDateString() %></td>
+                            <td class="text-end"> <form action="/admin/order-details" method="get"> 
+                                <input type="hidden" name="orderId" value="<%= order._id %>"> 
+                                <button type="submit" class="btn btn-md rounded font-sm">Detail</button> 
+                            </form> 
+                            <div class="dropdown"> 
+                                <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> 
+                                    <i class="material-icons md-more_horiz"></i> 
+                                </a> 
+                                <div class="dropdown-menu"> 
+                                        <button type="button" class="dropdown-item text-danger" onclick="deleteOrders('<%= order._id %>')">Delete</button> 
+                                    </div> 
+                                </div> 
+                            </td>
+                        </tr>
+                    </tbody>
+                    <%})%>
+                </table>
+            </div> 
+        </div>
+    </div>
+    <div class="pagination-area mt-15 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+               <% if(currentPage > 1){%>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">
+                            <i class="material-icons md-chevron_left"></i>
+                        </a>
+                    </li>
+               <%}%>
+    
+             <%for(let i=1;i< totalPage; i++){%>
+                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= ('0' + i).slice(-2) %></a>
+                    </li>
+              
+                    <%}%>
+               <%if(currentPage < totalPage){%>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">
+                            <i class="material-icons md-chevron_right"></i>
+                        </a>
+                    </li>
+               <%}%>
+            </ul>
+        </nav>
+    </div>
+    
+</section>
+<script>
+    function deleteOrders(orderId){
+        fetch(`/admin/delete-order/${orderId}`, {
+            method:'DELETE'
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data);
+            location.reload();
+        })
+        .catch(error => {
+            console.error('DeleateOrdersFrond:', error);
+            alert('An Error occure on the deleting...😶‍🌫️')
+            
+        })
+    }
+</script>
+<%- include('../partials/admin/footer') %>

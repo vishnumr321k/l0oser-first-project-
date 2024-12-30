@@ -1,0 +1,287 @@
+<%- include('../partials/user/header3') %>
+
+<!-- Include SweetAlert CSS & JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    /* Form Container */
+    .address_wrap {
+        border: 2px solid black; /* Black border for form container */
+        padding: 20px;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+
+    /* Form Fields */
+    .form-group input,
+    .form-group select {
+        border: 1px solid black; /* Black border for inputs and selects */
+        border-radius: 3px;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border: 2px solid black; /* Highlight border on focus */
+    }
+
+    /* Labels */
+    label {
+        font-weight: bold;
+        color: black;
+    }
+
+    /* Button Styling */
+    .btn {
+        background-color: black;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 3px;
+        padding: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+        background-color: #333;
+        color: white;
+    }
+  
+    /* Black and White Theme */
+    body {
+        background-color: #f5f5f5;
+    }
+
+    .address_wrap {
+        border: 3px solid black !important;
+        background-color: white !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .heading_s1 h3 {
+        color: black;
+        border-bottom: 2px solid black;
+        padding-bottom: 10px;
+    }
+
+    /* Form Fields */
+    .form-group input,
+    .form-group select {
+        border: 2px solid black !important;
+        background-color: white !important;
+        color: black !important;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none !important;
+        border-color: #333 !important;
+        box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+
+    /* Labels */
+    .form-group label {
+        color: black;
+        font-weight: bold;
+    }
+
+    /* Error Messages */
+    .form-group span[id$="Err"] {
+        color: red !important;
+        font-size: 0.8em;
+    }
+
+    /* Button */
+    .btn-fill-out {
+        background-color: black !important;
+        color: white !important;
+        border: none !important;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-fill-out:hover {
+        background-color: #333 !important;
+    }
+</style>
+
+<section class="pt-50 pb-50">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 m-auto">
+                <div class="address_wrap widget-taber-content p-30">
+                    <div class="padding_eight_all bg-white">
+                        <div class="heading_s1">
+                            <h3 class="mb-30">Add New Address</h3>
+                        </div>
+
+                        <form id="addressForm"  >
+                            <input type="hidden" name="userId" value="<%= user %>">
+                            <div class="form-group">
+                                <label for="addressType" >Address Type</label>
+                                <select id="addressType" name="addressType" class="form-control">
+                                    <option value="Home">Home</option>
+                                    <option value="Office">Office</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <span id="addressTypeErr" style="color:red;"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="Username" class="form-control">
+                                <span id="nameErr" style="color:red;"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <input type="text" id="state" name="state" class="form-control">
+                                <span id="stateErr" style="color:red;"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city" class="form-control">
+                                <span id="cityErr" style="color:red;"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="streetAddress">Street Address</label>
+                                <input type="text" id="streetAddress" name="streetAddress" class="form-control">
+                                <span id="streetAddressErr" style="color:red;"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pincode">Pincode</label>
+                                <input type="text" id="pincode" name="pincode" class="form-control">
+                                <span id="pincodeErr" style="color:red;"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="text" id="phone" name="mobile" class="form-control">
+                                <span id="phoneErr" style="color:red;"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="altPhone">Alternate Phone</label>
+                                <input type="text" id="altPhone" name="altMobile" class="form-control">
+                                <span id="altPhoneErr" style="color:red;"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="button" class="btn btn-fill-out btn-block hover-up" onclick="addAddress()">Save Address</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+       function clearErrorMessages(){
+        document.getElementById('addressTypeErr').innerHTML = '';
+        document.getElementById('nameErr').innerHTML = '';
+        document.getElementById('stateErr').innerHTML = '';
+        document.getElementById('cityErr').innerHTML = '';
+        document.getElementById('streetAddressErr').innerHTML = '';
+        document.getElementById('pincodeErr').innerHTML = '';
+        document.getElementById('phoneErr').innerHTML = '';
+        document.getElementById('altPhoneErr').innerHTML = '';
+    }
+
+    function displayErrorMessage(error){
+        console.log('Error in the add address:', error)
+
+        if(error.includes('Address Type')){
+            document.getElementById('addressTypeErr').innerText = error;
+        }else if(error.includes('Name')){
+            document.getElementById('nameErr').innerText = error;
+        }else if(error.includes('State')){
+            document.getElementById('stateErr').innerText = error;
+        }else if(error.includes('City')){
+            document.getElementById('cityErr').innerText = error;
+        }else if(error.includes('Street Address')){
+            document.getElementById('streetAddressErr').innerText = error;
+        }else if(error.includes('Pincode')){
+            document.getElementById('pincodeErr').innerText = error
+        }else if(error.includes('Phone')){
+           document.getElementById('phoneErr').innerText = error
+        }else if(error.includes('Alternate')){
+            document.getElementById('altPhoneErr').innerText = error;
+        }
+    }
+
+
+    async function addAddress(){
+        
+        const form = document.getElementById('addressForm')
+        const formData = new FormData(form);
+        const addAddress = {
+            addressType : formData.get('addressType'),
+            Username: formData.get('Username'),
+            state: formData.get('state'),
+            city: formData.get('city'),
+            streetAddress: formData.get('streetAddress'),
+            pincode: formData.get('pincode'),
+            mobile: formData.get('mobile'),
+            altMobile: formData.get('altMobile')
+        }
+            
+        try {
+            const response = await fetch('/save-address', {
+                method: 'POST',
+                headers:{
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(addAddress)
+            });
+
+
+            if(response.ok){
+                const success = await response.text();
+                await Swal.fire({
+                    icon:'success',
+                    title:'Adding Address is successfully..',
+                    confirmButtonText:'OK'
+                })
+                window.location.href = '/profile?tab=address';
+                
+            }else{
+                const result = await response.json();
+                if(result.errors){
+                    clearErrorMessages();
+                    // console.log(result.errors);
+                    result.errors.forEach(error => {
+                        console.log(error)
+                        displayErrorMessage(error);
+                    })
+                    Swal.fire({
+                    icon: 'error',
+                    title:'Address Adding Failed..',
+                    text: `Please correct the errors and try again.`,
+                    confirmButtonText: 'Try Again'
+                })
+                }
+                
+            }
+        } catch (error) {
+            console.error('add Address',error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occured while adding your address. please try again later.',
+                confirmButtonText:'OK'            
+            });
+        }
+    }
+
+ 
+    
+</script>
+<%- include('../partials/user/footer2') %>

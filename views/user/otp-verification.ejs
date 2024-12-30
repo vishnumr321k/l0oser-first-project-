@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000; /* Black background */
+            color: #fff; /* White text */
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: #121212; /* Dark grey container */
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .container h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group button {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        input[type="text"] {
+            background: #222; /* Darker grey input field */
+            color: #fff;
+            border: 1px solid #333; 
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #fff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+
+        button {
+            background: #fff; /* White button */
+            color: #000;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button[disabled] {
+            background-color: #555;
+            color: #aaa;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            margin-top: 1rem;
+            text-align: center;
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .success-message {
+            margin-top: 1rem;
+            text-align: center;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .timer {
+            margin-top: 1rem;
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OTP Verification</h1>
+        <form action="/verify-otp" method="POST" class="form-group">
+            <input type="hidden" name="email" value="<%= email %>" />
+            <input type="text" name="otp" placeholder="Enter OTP" maxlength="6" required />
+            <button type="submit">Verify OTP</button>
+        </form>
+
+        <form action="/resend-otp" method="POST" class="form-group" style="margin-top: 20px;">
+            <input type="hidden" name="email" value="<%= email %>" />
+            <button id="resend-btn" type="submit" disabled>Resend OTP</button>
+            <p class="timer" id="timer">Resend OTP in 30 seconds</p>
+        </form>
+
+        <% if (error) { %>
+            <p class="error-message"><%= error %></p>
+        <% } %>
+        <% if (message) { %>
+            <p class="success-message"><%= message %></p>
+        <% } %>
+    </div>
+
+    <script>
+        // Timer Logic
+        let countdown = 30;
+        const timerElement = document.getElementById("timer");
+        const resendButton = document.getElementById("resend-btn");
+
+        const interval = setInterval(() => {
+            countdown--;
+            timerElement.textContent = `Resend OTP in ${countdown} seconds`;
+
+            if (countdown <= 0) {
+                clearInterval(interval);
+                timerElement.textContent = "";
+                resendButton.disabled = false;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<%- include('../partials/admin/header') %>
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Update Category</h2>
+            <p>Modify the details of the selected category</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form id="editCategoryForm">
+                        <div class="mb-4">
+                            <label for="categoryName" class="form-label">Name</label>
+                            <input type="text" id="categoryName" name="categoryName" class="form-control border" value="<%= category.name %>"/>
+                            <div id="categoryNameError" class="text-danger"></div>
+                        </div>
+                    
+                        <div class="mb-4">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea id="description" name="description" class="form-control border"><%= category.description %></textarea>
+                            <div id="descriptionError" class="text-danger"></div>
+                        </div>
+                    
+                        <div class="d-grid mt-4">
+                            <button class="btn btn-primary" type="submit">Update Category</button>
+                        </div>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<%- include('../partials/admin/footer') %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('editCategoryForm').addEventListener('submit', async function (e) {
+        e.preventDefault(); // Prevent page refresh
+
+        // Collect form data
+        const categoryName = document.getElementById('categoryName').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const categoryId = "<%= category._id %>";
+
+        // Clear error messages
+        document.getElementById('categoryNameError').textContent = '';
+        document.getElementById('descriptionError').textContent = '';
+
+        try {
+            const response = await fetch(`/admin/editCategory/?id=${categoryId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ categoryName, description }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Display success alert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Category Updated!',
+                    text: result.message,
+                });
+            } else {
+                // Display error alert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: result.message,
+                });
+
+                // Optionally display error details on the page
+                if (result.message.includes('name')) {
+                    document.getElementById('categoryNameError').textContent = result.message;
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong! Please try again later.',
+            });
+        }
+    });
+</script>

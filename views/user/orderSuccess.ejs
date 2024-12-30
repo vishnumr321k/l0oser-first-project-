@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Successful</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .logo {
+            max-width: 200px; /* Adjust the size of the logo */
+            margin-bottom: 1.5rem;
+        }
+
+        .message {
+            color: #000;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .back-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 3rem 2rem;
+            background-color: #000;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .footer-section ul li a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: #666;
+            margin-right: 1rem;
+            text-decoration: none;
+        }
+
+        .payment-methods img {
+            height: 20px;
+            margin-left: 0.5rem;
+        }
+
+        .copyright {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .language-select {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        .btn-place-order {
+        background-color: #28a745;
+        color: white;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 5px;
+        border: none;
+        width: 100%;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-place-order:hover {
+        background-color: #218838;
+        transform: translateY(-1px);
+    }
+    </style>
+</head>
+<body>
+    <div class="modal-container">
+        <div class="modal">
+            <!-- Logo Image -->
+            <img src="/img/looser.png" alt="LOOSER Logo" class="logo">
+            <p class="message">Your order has been placed successfully...🤩</p>
+          
+            <form action="/order-details" method="get">
+                <input type="hidden" name="orderId" value="<%= orderId %>">
+                <input type="hidden" name="productCount" value="<%=productCount%>"> 
+                <button class="btn-place-order" style="background-color: black;" type='submit'>Continue</button>
+            </form>
+            
+        </div>
+    </div>
+</body>
+</html>

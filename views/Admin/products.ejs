@@ -1,0 +1,472 @@
+<%- include('../partials/admin/header') %>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    <style>
+        body {
+            background-color: #f8f8f8;
+            color: #333;
+        }
+        
+        .content-header {
+            padding: 2rem;
+            background-color: #000;
+            color: #fff;
+            margin-bottom: 2rem;
+        }
+        
+        .content-title {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            background-color: #fff;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .search-form {
+            width: 500px;
+        }
+        
+        .search-form input {
+            background-color: #fff;
+            border: 2px solid #000 !important;
+            color: #000;
+        }
+        
+        .search-form button {
+            background-color: #000;
+            color: #fff;
+            border: 2px solid #000 !important;
+        }
+        
+        .search-form button:hover {
+            background-color: #333;
+        }
+        
+        .table-container {
+            padding: 1.5rem;
+            margin: 1rem;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #dc3545;
+            transition: .4s;
+            border: 2px solid #000;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #28a745;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        /* Status text styling */
+        .status-text {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        
+        .table th,
+        .table td {
+            border: 2px solid #000;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .table th {
+            background-color: #000;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .table tr:hover {
+            background-color: #eaeaea;
+        }
+        
+        .btn {
+            border-radius: 4px;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .btn-info {
+            background-color: #000 !important;
+            color: #fff !important;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545 !important;
+        }
+        
+        .btn-success {
+            background-color: #28a745 !important;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 2rem 0;
+            padding: 1rem;
+        }
+        
+        .pagination-container a,
+        .pagination-container span {
+            padding: 10px 15px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .pagination-container a:hover {
+            background-color: #000;
+            color: #fff;
+        }
+        
+        .pagination-container .current-page {
+            background-color: #000;
+            color: #fff;
+            border: 2px solid #000;
+        }
+
+        /* Custom styling for SweetAlert */
+        .swal2-popup {
+            border: 2px solid #000;
+        }
+
+        .swal2-styled.swal2-confirm {
+            background-color: #000 !important;
+        }
+
+        /* Custom styling for buttons */
+        .btn-info a,
+        .btn-danger a,
+        .btn-success a {
+            color: #fff !important;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<div class="content-header">
+    <div>
+        <h2 class="content-title">Products</h2>
+    </div>
+</div>
+
+<div class="search-container">
+    <form action="" method="get" class="search-form">
+        <div class="input-group input-group-sm border border-1 border-grey rounded-pill">
+            <input type="text" class="form-control border-0 rounded-pill" placeholder="Search products or brands" name="search">
+            <button class="btn border-0" type="submit">Search</button>
+        </div>
+    </form>
+</div>
+
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product name</th>
+                <th>Brand</th>
+                <th>Category</th>
+                <th>Sale Price</th>
+                <th>Offer Price</th>
+                <th>Offer</th>
+                <th>Quantity</th>
+                <th>Action</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%for(let i=data.length-1;i >= 0 ;i--){%>
+            <tr>
+                <td><%= data[i].productName%></td>
+                <td><%= data[i].brand %></td>
+                <td><%= data[i].category.name %></td>
+                <td><%=data[i].salePrice %></td>
+                <% if(data[i].productOffer){%>
+                <td><%=data[i].productOffer%>%</td>
+                <%}else{%>
+                <td>0%</td>
+                <%}%>
+                <td>
+                    <%if(locals.data[i].productOffer === 0){%>
+                    <button class="btn btn-info" onclick="addOffer('<%= data[i]._id %>')" style="width: 100px;">
+                        <a href="#" class="text-white">Add Offer</a>
+                    </button>
+                    <%}else{%>
+                    <button class="btn btn-info" onclick="removeOffer('<%=data[i]._id%>')" style="width: 100px;">
+                        <a href="#" class="text-white">Remove</a>
+                    </button>
+                    <%}%>
+                </td>
+                <td><%=data[i].quantity%></td>
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" 
+                               onchange="toggleBlockStatus('<%=data[i]._id%>', this)" 
+                               <%= data[i].isBlocked ? '' : 'checked' %>>
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="status-text"><%= data[i].isBlocked ? 'Blocked' : 'Active' %></span>
+                </td>
+                <td>
+                    <button class="btn btn-info" style="width: 80px;">
+                        <a href="/admin/editProduct?id=<%=data[i]._id%>" class="text-white" style="text-decoration: none;">Edit</a>
+                    </button>
+                </td>
+            </tr>
+            <%}%>
+        </tbody>
+    </table>
+</div>
+
+<div class="container">
+    <div class="pagination-container" >
+        <% if (currentPage > 1) { %>
+        <a href="?page=<%= currentPage - 1 %>" >&laquo; Previous</a>
+        <% } %>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+        <% if (i === currentPage) { %>
+        <span class="current-page"><%= i %></span>
+        <% } else { %>
+        <a href="?page=<%= i %>"><%= i %></a>
+        <% } %>
+        <% } %>
+        <% if (currentPage < totalPages) { %>
+        <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+        <% } %>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    async function addOffer(productId) {
+        const { value: amount } = await Swal.fire({
+            title: 'Offer in Percentage',
+            input: 'number',
+            inputLabel: 'Percentage',
+            inputPlaceholder: '%',
+            inputAttributes: {
+                min: 1,
+                max: 100,
+                step: 1
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            preConfirm: (value) => {
+                if (value === '' || isNaN(value)) {
+                    return Swal.showValidationMessage('Please enter a valid number.');
+                }
+                const numericValue = parseInt(value, 10);
+                if (numericValue < 1 || numericValue > 100) {
+                    return Swal.showValidationMessage('Please enter a percentage between 1 and 100.');
+                }
+                return numericValue;
+            }
+        });
+
+        if (amount) {
+            $.ajax({
+                url: '/admin/addProductOffer',
+                method: 'POST',
+                data: {
+                    percentage: amount,
+                    productId: productId
+                },
+                success: (response) => {
+                    if (response.status === true) {
+                        Swal.fire('Offer Added', 'The offer has been added successfully!', 'success')
+                            .then(() => {
+                                location.reload();
+                            });
+                    } else {
+                        Swal.fire('Failed', 'Failed to add the offer', 'error');
+                    }
+                },
+                error: (err) => {
+                    Swal.fire('Error', 'An error occurred while adding the offer', 'error');
+                    console.error('Error:', err);
+                }
+            });
+        }
+    }
+
+    function removeOffer(productId) {
+        try {
+            Swal.fire({
+                title: 'Remove Offer',
+                text: 'Are you sure you want to remove this offer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#000000',
+                cancelButtonColor: '#dc3545',
+                confirmButtonText: 'Yes, remove it!',
+                timer: 5000,
+                timerProgressBar: true
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/admin/removeproductoffer',
+                        method: 'post',
+                        data: {
+                            productId: productId
+                        },
+                        success: (response) => {
+                            if (response.status === true) {
+                                Swal.fire({
+                                    title: "Removed!",
+                                    text: "The offer has been removed",
+                                    icon: "success",
+                                    timer: 5000,
+                                    confirmButtonColor: '#000000',
+                                    confirmButtonText: 'OK',
+                                }).then(() => {
+                                    location.reload()
+                                });
+                            } else {
+                                Swal.fire("Failed", "Failed to remove the offer", "error");
+                            }
+                        },
+                        error: (error) => {
+                            Swal.fire('Error', 'Something went wrong', 'error');
+                        }
+                    });
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    function toggleBlockStatus(productId, checkbox) {
+        const isBlocking = !checkbox.checked;
+        const action = isBlocking ? 'block' : 'unblock';
+        
+        Swal.fire({
+            title: `${action.charAt(0).toUpperCase() + action.slice(1)} Product`,
+            text: `Are you sure you want to ${action} this product?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#000000',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: `Yes, ${action} it!`,
+            timer: 5000,
+            timerProgressBar: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Make the AJAX request
+                $.ajax({
+                    url: `/admin/${action}Product`,
+                    method: 'get',
+                    data: { id: productId },
+                    success: function(response) {
+                        // Update the checkbox state and status text
+                        const statusText = checkbox.parentElement.nextElementSibling;
+                        statusText.textContent = isBlocking ? 'Blocked' : 'Active';
+                        
+                        Swal.fire({
+                            title: `${action.charAt(0).toUpperCase() + action.slice(1)}ed!`,
+                            text: `Product has been ${action}ed successfully.`,
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    },
+                    error: function(error) {
+                        // Revert the checkbox state on error
+                        checkbox.checked = !checkbox.checked;
+                        Swal.fire({
+                            title: 'Error!',
+                            text: `Failed to ${action} product.`,
+                            icon: 'error',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    }
+                });
+            } else {
+                // If user cancels, revert the checkbox state
+                checkbox.checked = !checkbox.checked;
+            }
+        });
+    }
+</script>
+
+<%- include('../partials/admin/footer') %>

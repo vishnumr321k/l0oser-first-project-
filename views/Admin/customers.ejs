@@ -1,0 +1,248 @@
+<%- include('../partials/admin/header') %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    .card-body {
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.pagination-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    background: #f9fafb;
+    color: #111827;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination-link.active {
+    background: #111827;
+    color: white;
+    font-weight: bold;
+}
+
+.pagination-link:hover {
+    background: #e5e7eb;
+}
+
+.pagination-disabled {
+    padding: 0.5rem 1rem;
+    color: #9ca3af;
+    cursor: not-allowed;
+    background: #f3f4f6;
+    border-radius: 0.375rem;
+}
+
+    /* Table Styling */
+    .table {
+        margin-bottom: 0;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 0.5rem;
+    }
+
+    .table thead th {
+        background-color: #f9fafb;
+        color: #111827;
+        font-weight: 600;
+        padding: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.05em;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    .table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+        color: #4b5563;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* Toggle Switch Styling */
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #e5e7eb;
+        transition: .4s;
+        border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+        background-color: #111827;
+    }
+
+    input:checked + .toggle-slider:before {
+        transform: translateX(26px);
+    }
+
+    /* Status Badge Styling */
+    .badge {
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        border-radius: 9999px;
+    }
+
+    .alert-success {
+        background-color: #f0fdf4;
+        color: #166534;
+    }
+
+    .alert-danger {
+        background-color: #fef2f2;
+        color: #991b1b;
+    }
+
+    /* Keep your existing search form and pagination styles */
+</style>
+
+<div class="card-body">
+    <form class="search-form" method="get" action="/admin/user">
+        <div class="input-group">
+            <input type="text" class="form-control" name="search" placeholder="Search Users"  value="<%= search || '' %>">
+            <button class="btn btn-light bg" type="submit"> <i class="material-icons md-search"></i></button>
+        </div>
+    </form>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%if(data && data.length>0){%>
+                    <% for(let i=0;i< data.length;i++){ %>
+                        <tr>
+                            <td><%= data[i].name %></td>
+                            <td><%= data[i].email %></td>
+                            <td><%= data[i].mobile %></td>
+                            <td>
+                                <%if(data[i].isBlocked){%>
+                                    <span class="badge rounded-pill alert-danger">Blocked</span>
+                                <%}else{%>
+                                    <span class="badge rounded-pill alert-success">Active</span>
+                                <%}%>
+                            </td>
+                            <td>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" 
+                                           onchange="toggleUserStatus(this, '<%= data[i]._id %>')"
+                                            <%= !data[i].isBlocked ? 'checked' : '' %>>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </td>
+                        </tr>
+                    <% } %>
+                <%}%>
+            </tbody>
+        </table>
+    </div>
+</div>
+<br>
+<br>
+<br>
+
+
+<div class="pagination" style="z-index: 100;">
+    <% if (currentPage > 1) { %>
+        <a href="/admin/user?page=<%= currentPage - 1 %>&search=<%= search || '' %>" class="pagination-link" style="z-index: 200;">Previous</a>
+    <% } else { %>
+        <span class="pagination-disabled" style="z-index: 200;">Previous</span>
+    <% } %>
+
+    <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+        <a href="/admin/user?page=<%= i %>&search=<%= search || '' %>" 
+           class="pagination-link <%= currentPage == i ? 'active' : '' %>" style="z-index: 200;">
+            <%= i %>
+        </a>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+        <a href="/admin/user?page=<%= currentPage + 1 %>&search=<%= search || '' %>" class="pagination-link" style="z-index: 200;">Next</a>
+    <% } else { %>
+        <span class="pagination-disabled" style="z-index: 400;">Next</span>
+    <% } %>
+    <br> <br>
+</div>
+
+
+
+<script>
+function toggleUserStatus(checkbox, userId) {
+    const isBlocked = !checkbox.checked;
+    const action = isBlocked ? 'block' : 'unblock';
+    
+    Swal.fire({
+        title: `Confirm ${action}?`,
+        text: `Are you sure you want to ${action} this user?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#111827',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Redirect to your existing block/unblock URL
+            window.location.href = `/admin/${action}customer?id=${userId}`;
+        } else {
+            // Revert the checkbox if action is cancelled
+            checkbox.checked = !isBlocked;
+        }
+    });
+}
+</script>
+
+<%- include('../partials/admin/footer') %>

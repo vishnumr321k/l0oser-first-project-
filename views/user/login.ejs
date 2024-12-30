@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .links {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .links a {
+            color: #000;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        footer {
+            background: #000;
+            color: white;
+            padding: 2rem;
+            margin-top: auto;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="login-container">
+            <h1>Login</h1>
+
+            <form id="login-form" method="post" action="/login">
+                <div class="input-group">
+                    <input type="email" id="email" placeholder="Email" name="email" >
+                    <div id="error-email" class="error-message"></div>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="Password" name="password" >
+                    <div id="error-password" class="error-message"></div>
+                </div>
+
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+
+            <div class="social-login">
+                <a href="/auth/google" class="social-btn">Login with Google</a>
+            </div>
+
+            <div class="links">
+                <a href="/forgot-password">Forgot Password?</a>
+                <br>
+                Don't have an account? <a href="/signup">Sign Up</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Your Company. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('login-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const errorEmail = document.getElementById('error-email');
+            const errorPassword = document.getElementById('error-password');
+
+            form.addEventListener('submit', function (e) {
+                let valid = true;
+
+                // Reset error messages initially
+                errorEmail.style.display = 'none';
+                errorPassword.style.display = 'none';
+
+                // Validate email
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(emailInput.value.trim())) {
+                    errorEmail.style.display = 'block';
+                    errorEmail.innerHTML = 'Invalid email format';
+                    valid = false;
+                } else {
+                    errorEmail.style.display = 'none';
+                    errorEmail.innerHTML = '';
+                }
+
+                // Validate password
+                const password = passwordInput.value;
+                if (password.length < 8) {
+                    errorPassword.style.display = 'block';
+                    errorPassword.innerHTML = 'Password must be at least 8 characters long';
+                    valid = false;
+                } else {
+                    errorPassword.style.display = 'none';
+                    errorPassword.innerHTML = '';
+                }
+
+                if (!valid) {
+                    e.preventDefault(); 
+                }
+            });
+        });
+    </script>
+</body>
+</html>

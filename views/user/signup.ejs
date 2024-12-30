@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .signup-link {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .signup-link a {
+            color: #000;
+            text-decoration: none;
+        }
+
+        footer {
+            background: #000;
+            color: white;
+            padding: 2rem;
+            margin-top: auto;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="login-container">
+            <h1>Create an Account</h1>
+            
+            <form id="signup-form" method="post" action="/signup">
+                <div class="input-group">
+                    <input type="text" id="name" placeholder="Name" name="name">
+                    <div id="error-name" class="error-message">Name is required.</div>
+                </div>
+
+                <div class="input-group">
+                    <input type="email" id="email" placeholder="Email" name="email">
+                    <div id="error-email" class="error-message">Invalid email format.</div>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="Password" name="password">
+                    <div id="error-password" class="error-message">Password must have at least 8 characters, including letters and numbers.</div>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" id="confirm-password" placeholder="Confirm Password" name="cpassword">
+                    <div id="error-confirm-password" class="error-message">Passwords do not match.</div>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="mobile" placeholder="Mobile Number" name="mobile">
+                    <div id="error-mobile" class="error-message">Enter a valid 10-digit mobile number.</div>
+                </div>
+
+                <button type="submit" class="login-btn">Sign Up</button>
+            </form>
+
+            <div class="social-login">
+                <a href="/auth/google" class="social-btn">Sign up with Google</a>
+            </div>
+
+            <div class="signup-link">
+                Already have an account? <a href="/login">Login</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Your Company. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('signup-form');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            const mobileInput = document.getElementById('mobile');
+
+            const errorName = document.getElementById('error-name');
+            const errorEmail = document.getElementById('error-email');
+            const errorPassword = document.getElementById('error-password');
+            const errorConfirmPassword = document.getElementById('error-confirm-password');
+            const errorMobile = document.getElementById('error-mobile');
+
+            form.addEventListener('submit', function (e) {
+                let valid = true;
+
+                // Validate name
+                if (!/^[A-Za-z\s]+$/.test(nameInput.value.trim())) {
+                    errorName.style.display = 'block';
+                    errorName.textContent = 'Name must contain only letters and spaces.';
+                    valid = false;
+                } else {
+                    errorName.style.display = 'none';
+                }
+
+                // Validate email
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(emailInput.value.trim())) {
+                    errorEmail.style.display = 'block';
+                    errorEmail.textContent = 'Invalid email format.';
+                    valid = false;
+                } else {
+                    errorEmail.style.display = 'none';
+                }
+
+                // Validate password
+                const password = passwordInput.value;
+                if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+                    errorPassword.style.display = 'block';
+                    errorPassword.textContent = 'Password must have at least 8 characters, including letters and numbers.';
+                    valid = false;
+                } else {
+                    errorPassword.style.display = 'none';
+                }
+
+                // Validate confirm password
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    errorConfirmPassword.style.display = 'block';
+                    errorConfirmPassword.textContent = 'Passwords do not match.';
+                    valid = false;
+                } else {
+                    errorConfirmPassword.style.display = 'none';
+                }
+
+                // Validate mobile
+                if (!/^\d{10}$/.test(mobileInput.value.trim())) {
+                    errorMobile.style.display = 'block';
+                    errorMobile.textContent = 'Enter a valid 10-digit mobile number.';
+                    valid = false;
+                } else {
+                    errorMobile.style.display = 'none';
+                }
+
+                if (!valid) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

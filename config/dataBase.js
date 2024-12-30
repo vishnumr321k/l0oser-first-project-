@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Admin = require('../model/Admin/AdminSchema');
 const env = require('dotenv').config();
 
+
+
 const connectDb = async() =>{
     try {
         await mongoose.connect(process.env.mongoURI)
@@ -12,7 +14,8 @@ const connectDb = async() =>{
             const defultAdmin = new Admin({
                 name: 'Vishnu M R',
                 email: 'admin123k@gmail.com',
-                password: 'admin123'
+                password: 'admin123',
+                isAdmin: 1
             });
             await defultAdmin.save();
             console.log('Defult Admin Created Successfully!');
@@ -25,4 +28,4 @@ const connectDb = async() =>{
     }
 }
 
-module.exports = connectDb
+module.exports =  connectDb

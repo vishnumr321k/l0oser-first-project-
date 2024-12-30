@@ -1,0 +1,177 @@
+<%- include('../partials/admin/header') %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .content-main {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .content-header input {
+        width: 300px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: box-shadow 0.3s ease;
+    }
+    .content-header input:focus {
+        box-shadow: 0 0 5px #000000;
+    }
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+        
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+        transition: background-color 0.3s ease;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #000000, #000000);
+        border: none;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #000000, #000000);
+        transform: scale(1.05);
+    }
+    .pagination-area .page-item.active .page-link {
+        background-color: #000000;
+        border-color: #000000;
+    }
+    .pagination-area .page-item .page-link {
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .pagination-area .page-item .page-link:hover {
+        background-color: #000000;
+        transform: scale(1.1);
+    }
+    .loading-spinner {
+        display: none;
+        width: 40px;
+        height: 40px;
+        border: 4px solid #ddd;
+        border-top: 4px solid #000000;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 10px auto;
+    }
+    
+</style>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Stock Management</h2>
+        </div>
+        <div>
+            <input type="text" placeholder="Search product name" class="form-control bg-white">
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                <div class="col-lg-2 col-6 col-md-3">
+                    <select class="form-select">
+                        <option value="All">All Categories</option>
+                        <option value="Mens">Mens</option>
+                        <option value="Womens">Womens</option>
+                        <option value="Home">Kids</option>
+                        <option value="New Arrivals">New Arrivals</option>
+                        <option value="new Style's">new Style's</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Update Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%products.forEach((product,i) => {%>
+                        <tr>
+                            <td><%= product._id %></td>
+                            <td><%= product.productName %></td>
+                            <td><%= product.category.name %></td>
+                            <td>
+                                <form action="/admin/update-stock-management" method="post" class="d-inline-block" id="updateProductStock-<%=product._id%>"">
+                                    <input type="hidden" name="productId" value="<%= product._id %>">
+                                    <input type="number" min="0" value="<%= product.quantity %>" class="form-control d-inline-block" style="width: 100px;" name="quantity">
+                                    <button type="button" class="btn btn-primary btn-sm ms-2" onclick="successMessageUpdate(event,'<%=product._id%>')">Update</button>
+                                </form>
+                                
+                            </td>
+                            
+                        </tr>
+                        <%})%>
+                    </tbody>
+                </table>
+            </div>
+            <div class="loading-spinner" id="loading-spinner"></div>
+        </div>
+    </div>
+    <div class="pagination-area mt-15 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <%if(currentPage > 1){%>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">
+                            <i class="material-icons md-chevron_left"></i>
+                        </a>
+                    </li>
+                <%}%>
+    
+                <%for(let i=1; i< totalPage; i++){%>
+                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= ('0' + i ).slice(-2) %></a>
+                    </li>
+                <%}%>
+                  
+                <%if(currentPage < totalPage){%>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">
+                            <i class="material-icons md-chevron_right"></i>
+                        </a>
+                    </li>
+                    <%}%>
+            </ul>
+        </nav>
+</section>
+<script>
+   function successMessageUpdate(event,productId){
+    event.preventDefault();
+    
+    Swal.fire({
+        icon: 'success',
+            title: 'Stock Updated Successfully..',
+            text: 'The Stoke Updated...',
+            timer: 2000, 
+            showConfirmButton: false
+    }).then(() =>{
+        document.getElementById(`updateProductStock-${productId}`).submit();
+    })
+    
+
+
+   }
+</script>
+<%- include('../partials/admin/footer') %>

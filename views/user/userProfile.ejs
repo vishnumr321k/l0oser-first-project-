@@ -1,0 +1,691 @@
+<%- include('../partials/user/header3') %>
+<style>
+    /* Black and White Theme */
+    body {
+        background-color: #f5f5f5;
+    }
+    #updateProfileBtn {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#updateProfileBtn:hover {
+    background-color: white;
+    color: black;
+    border-color: black;
+}
+
+    .address_wrap {
+        border: 3px solid black !important;
+        background-color: white !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .heading_s1 h3 {
+        color: black;
+        border-bottom: 2px solid black;
+        padding-bottom: 10px;
+    }
+
+    /* Form Fields */
+    .form-group input,
+    .form-group select {
+        border: 2px solid black !important;
+        background-color: white !important;
+        color: black !important;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none !important;
+        border-color: #333 !important;
+        box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+
+    /* Labels */
+    .form-group label {
+        color: black;
+        font-weight: bold;
+    }
+
+    /* Error Messages */
+    .form-group span[id$="Err"] {
+        color: red !important;
+        font-size: 0.8em;
+    }
+
+    /* Button */
+    .btn-fill-out {
+        background-color: black !important;
+        color: white !important;
+        border: none !important;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-fill-out:hover {
+        background-color: #333 !important;
+    }
+</style>
+<div class="mobile-header-active mobile-header-wrapper-style">
+    <div class="mobile-header-wrapper-inner">
+        <div class="mobile-header-top">
+            <div class="mobile-header-logo">
+                <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a>
+            </div>
+            <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
+                <button class="close-style search-close">
+                    <i class="icon-top"></i>
+                    <i class="icon-bottom"></i>
+                </button>
+            </div>
+        </div>
+        <div class="mobile-header-content-area">
+            <div class="mobile-search search-style-3 mobile-header-border">
+                <form action="#">
+                    <input type="text" placeholder="Search for items…">
+                    <button type="submit"><i class="fi-rs-search"></i></button>
+                </form>
+            </div>
+            <div class="mobile-menu-wrap mobile-header-border">
+                <div class="main-categori-wrap mobile-header-border">
+                    <a class="categori-button-active-2" href="#">
+                        <span class="fi-rs-apps"></span> Browse Categories
+                    </a>
+                    <div class="categori-dropdown-wrap categori-dropdown-active-small">
+                        <ul>
+                            <li><a href="shop-grid-right.html"><i class="evara-font-dress"></i>Women's Clothing</a></li>
+                            <li><a href="shop-grid-right.html"><i class="evara-font-tshirt"></i>Men's Clothing</a></li>
+                            <li> <a href="shop-grid-right.html"><i class="evara-font-smartphone"></i> Cellphones</a></li>
+                            <li><a href="shop-grid-right.html"><i class="evara-font-desktop"></i>Computer & Office</a></li>
+                            <li><a href="shop-grid-right.html"><i class="evara-font-cpu"></i>Consumer Electronics</a></li>
+                            <li><a href="shop-grid-right.html"><i class="evara-font-home"></i>Home & Garden</a></li>
+                            <li><a href="shop-grid-right.html"><i class="evara-font-high-heels"></i>Shoes</a></li>
+                            <li><a href="shop-grid-right.html"><i class="evara-font-teddy-bear"></i>Mother & Kids</a></li>
+                            <li><a href="shop-grid-right.html"><i class="evara-font-kite"></i>Outdoor fun</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- mobile menu start -->
+                <nav>
+                    <ul class="mobile-menu">
+                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="index.html">Home</a>
+                            <ul class="dropdown">
+                                <li><a href="index.html">Home 1</a></li>
+                                <li><a href="index-2.html">Home 2</a></li>
+                                <li><a href="index-3.html">Home 3</a></li>
+                                <li><a href="index-4.html">Home 4</a></li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="shop-grid-right.html">shop</a>
+                            <ul class="dropdown">
+                                <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
+                                <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
+                                <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
+                                <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
+                                <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Single Product</a>
+                                    <ul class="dropdown">
+                                        <li><a href="shop-product-right.html">Product – Right Sidebar</a></li>
+                                        <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
+                                        <li><a href="shop-product-full.html">Product – No sidebar</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="shop-filter.html">Shop – Filter</a></li>
+                                <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
+                                <li><a href="shop-cart.html">Shop – Cart</a></li>
+                                <li><a href="shop-checkout.html">Shop – Checkout</a></li>
+                                <li><a href="shop-compare.html">Shop – Compare</a></li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Mega menu</a>
+                            <ul class="dropdown">
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Women's Fashion</a>
+                                    <ul class="dropdown">
+                                        <li><a href="shop-product-right.html">Dresses</a></li>
+                                        <li><a href="shop-product-right.html">Blouses & Shirts</a></li>
+                                        <li><a href="shop-product-right.html">Hoodies & Sweatshirts</a></li>
+                                        <li><a href="shop-product-right.html">Women's Sets</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Men's Fashion</a>
+                                    <ul class="dropdown">
+                                        <li><a href="shop-product-right.html">Jackets</a></li>
+                                        <li><a href="shop-product-right.html">Casual Faux Leather</a></li>
+                                        <li><a href="shop-product-right.html">Genuine Leather</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Technology</a>
+                                    <ul class="dropdown">
+                                        <li><a href="shop-product-right.html">Gaming Laptops</a></li>
+                                        <li><a href="shop-product-right.html">Ultraslim Laptops</a></li>
+                                        <li><a href="shop-product-right.html">Tablets</a></li>
+                                        <li><a href="shop-product-right.html">Laptop Accessories</a></li>
+                                        <li><a href="shop-product-right.html">Tablet Accessories</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="blog-category-fullwidth.html">Blog</a>
+                            <ul class="dropdown">
+                                <li><a href="blog-category-grid.html">Blog Category Grid</a></li>
+                                <li><a href="blog-category-list.html">Blog Category List</a></li>
+                                <li><a href="blog-category-big.html">Blog Category Big</a></li>
+                                <li><a href="blog-category-fullwidth.html">Blog Category Wide</a></li>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Single Product Layout</a>
+                                    <ul class="dropdown">
+                                        <li><a href="blog-post-left.html">Left Sidebar</a></li>
+                                        <li><a href="blog-post-right.html">Right Sidebar</a></li>
+                                        <li><a href="blog-post-fullwidth.html">No Sidebar</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Pages</a>
+                            <ul class="dropdown">
+                                <li><a href="page-about.html">About Us</a></li>
+                                <li><a href="page-contact.html">Contact</a></li>
+                                <li><a href="page-account.html">My Account</a></li>
+                                <li><a href="page-login-register.html">login/register</a></li>
+                                <li><a href="page-purchase-guide.html">Purchase Guide</a></li>
+                                <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
+                                <li><a href="page-terms.html">Terms of Service</a></li>
+                                <li><a href="page-404.html">404 Page</a></li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Language</a>
+                            <ul class="dropdown">
+                                <li><a href="#">English</a></li>
+                                <li><a href="#">French</a></li>
+                                <li><a href="#">German</a></li>
+                                <li><a href="#">Spanish</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- mobile menu end -->
+            </div>
+            <div class="mobile-header-info-wrap mobile-header-border">
+                <div class="single-mobile-header-info mt-30">
+                    <a  href="page-contact.html"> Our location </a>
+                </div>
+                <div class="single-mobile-header-info">
+                    <a href="page-login-register.html">Log In / Sign Up </a>
+                </div>
+                <div class="single-mobile-header-info">
+                    <a href="#">(+01) - 2345 - 6789 </a>
+                </div>
+            </div>
+            <div class="mobile-social-icon">
+                <h5 class="mb-15 text-grey-4">Follow Us</h5>
+                <a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
+                <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
+                <a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
+                <a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
+                <a href="#"><img src="assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+<main class="main">
+    <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="/home" rel="nofollow">Home</a>
+                
+                <span></span> Account
+            </div>
+        </div>
+    </div>
+    <section class="pt-150 pb-150">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 m-auto">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="dashboard-menu">
+                                <ul class="nav flex-column" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="false">
+                                            <i class="fi-rs-settings-sliders mr-10"></i>Dashboard
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false">
+                                            <i class="fi-rs-shopping-bag mr-10"></i>Orders
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false">
+                                            <i class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true">
+                                            <i class="fi-rs-marker mr-10"></i>My Address
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="false">
+                                            <i class="fi-rs-user mr-10"></i>Account details
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/user-wallet">
+                                            <i class="fi-rs mr-10"></i>Wallet
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/logout">
+                                            <i class="fi-rs-sign-out mr-10"></i>Logout
+                                        </a>
+                                    </li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="tab-content dashboard-content">
+                                <div class="tab-pane fade" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Hello <%= user.name %> </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <p>From your account dashboard. you can easily check &amp; view your <a href="#">recent orders</a>, manage your <a href="#">shipping and billing addresses</a> and <a href="#">edit your password and account details.</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Your Orders</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Order</th>
+                                                            <th>Date</th>
+                                                            <th>Status</th>
+                                                            <th>Payment Status</th> <!-- New Payment Status column -->
+                                                            <th>Discount</th>
+                                                            <th>Total</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% orders.forEach(order => { %>
+                                                        <tr>
+                                                            <td><%= order.orderId %></td>
+                                                            <td><%= order.orderDate.toLocaleDateString() %></td>
+                                                            <% if (order.status === 'Cancelled') { %>
+                                                                <td style="color: red;"><%= order.status %></td>
+                                                            <% } else if (order.status === 'Pending') { %>
+                                                                <td style="color: rgb(255, 166, 0);"><%= order.status %></td>
+                                                            <% } else if (order.status === 'Processing') { %>
+                                                                <td style="color: rgb(0, 136, 255);"><%= order.status %></td>
+                                                            <% } else if (order.status === 'Shipped') { %>
+                                                                <td style="color: rgb(0, 255, 174);"><%= order.status %></td>
+                                                            <% } else if (order.status === 'Deliverd') { %>
+                                                                <td style="color: rgb(0, 255, 55);"><%= order.status %></td>
+                                                            <% } else if (order.status === 'Return') { %>
+                                                                <td style="color: rgb(255, 196, 0);"><%= order.status %></td>
+                                                            <% } %>
+                                                            <% if (order.paymentStatus === 'Complete') { %>
+                                                                <td style="color: rgb(12, 207, 12);"><%= order.paymentStatus %></td>
+                                                            <% } else if (order.paymentStatus === 'Pending') { %>
+                                                                <td style="color: orange;"><%= order.paymentStatus %></td>
+                                                            <% } else if (order.paymentStatus === 'Failure') { %>
+                                                                <td style="color: red;"><%= order.paymentStatus %></td>
+                                                            <% } else { %>
+                                                                <td><%= order.paymentStatus || 'Unknown' %></td>
+                                                            <% } %>
+                                                            <td>₹<%= order.discount %></td>
+                                                            <td>₹<%= order.totalAmount %></td>
+                                                            <td><a href="/order-details?orderId=<%= order._id %>" class="btn-small d-block">View</a></td>
+                                                        </tr>
+                                                        <% }) %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Orders tracking</h5>
+                                        </div>
+                                        <div class="card-body contact-from-area">
+                                            <p>To track your order please enter your OrderID in the box below and press "Track" button. This was given to you on your receipt and in the confirmation email you should have received.</p>
+                                            <div class="row">
+                                                <div class="col-lg-8">
+                                                    <form class="contact-form-style mt-30 mb-50" action="#" method="post">
+                                                        <div class="input-style mb-20">
+                                                            <label>Order ID</label>
+                                                            <input name="order-id" placeholder="Found in your order confirmation email" type="text" class="square">
+                                                        </div>
+                                                        <div class="input-style mb-20">
+                                                            <label>Billing email</label>
+                                                            <input name="billing-email" placeholder="Email you used during checkout" type="email" class="square">
+                                                        </div>
+                                                        <button class="submit submit-auto-width" type="submit">Track</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                                    <div class="row">
+                                        <% if (user.addresses && user.addresses.length > 0) { %>
+                                            <% user.addresses.forEach((address, index) => { %>
+                                                <div class="col-lg-6">
+                                                    <div class="card mb-3 mb-lg-0">
+                                                        <div class="card-header">
+                                                            <h5 class="mb-0" style="color: rgb(255, 255, 255);"><%= address.addressType %> Address</h5>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <address>
+                                                                <%= address.streetAddress %><br>
+                                                                <%= address.city %>, <%= address.state %><br>
+                                                                <%= address.pincode %><br>
+                                                                <strong>Phone:</strong> <%= address.mobile %><br>
+                                                                <% if (address.altMobile) { %>
+                                                                    <strong>Alt Phone:</strong> <%= address.altMobile %>
+                                                                <% } %>
+                                                            </address>
+                                                            <div class="d-flex justify-content-between">
+                                                                <a href="/edit-address?addressId=<%= address._id %>">
+                                                                <button 
+                                                                    class="btn btn-outline-dark btn-sm" 
+                                                                    onclick="" >
+                                                                    Edit
+                                                                </button>
+                                                            </a>
+                                                             
+                                                                
+                                                                <button 
+                                                                    class="btn btn-dark btn-sm text-white" 
+                                                                    onclick="deleteAddress('<%= address._id %>')">
+                                                                    Delete
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <p class="col-lg-12 text-center">No addresses available. Add a new address below.</p>
+                                        <% } %>
+                                        <br><br><br>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <form action="/add-address" method="get">
+                                                <input class="btn btn-primary" type="submit" value="Add Address">
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Account Details</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <form  name="enq" id="updateProfileForm" >
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <label>Name<span class="required">*</span></label>
+                                                        <input  id="name" required="" class="form-control square" name="name" type="text" value="<%= user.name %>">
+                                                    </div>
+                                                    <div class="form-group col-md-12">
+                                                        <label>Email Address <span class="required">*</span></label>
+                                                        <input id="email" required="" class="form-control square" name="email" type="email" value="<%= user.email %>" disabled="disabled">
+                                                    </div>
+                                                    <div class="form-group col-md-12">
+                                                        <label>Phone <span class="required">*</span></label>
+                                                        <input  id="phone" required="" class="form-control square" name="mobile" type="text" value="<%= user.mobile %>">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="button" class="btn-small" id="updateProfileBtn" onclick="updateproFile()">Update Profile</button>
+                                                </div>
+                                                
+                                            </form>
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Update password</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <form  name="enq" id="updatePassword" >
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <label>Current Password<span class="required">*</span></label>
+                                                        <input  id="currentPassword" required="" class="form-control square" name="currentPassword" type="password"  placeholder="Enter your current password...">
+                                                    </div>
+                                                    <div class="form-group col-md-12">
+                                                        <label>New Password<span class="required">*</span></label>
+                                                        <input id="newPassword" required="" class="form-control square" name="email" type="password"  placeholder="Enter New Password...">
+                                                    </div>
+                                                    <div class="form-group col-md-12">
+                                                        <label>Confirm Password<span class="required">*</span></label>
+                                                        <input  id="confirmPassword" required="" class="form-control square" name="confirmPassword" type="password"  placeholder="Re-enter to Confirm Password...">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="button" class="btn-small" id="updateProfileBtn" onclick="updatePassword()">Update Password</button>
+                                                </div>
+                                                
+                                            </form>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+        if (tab === 'address') {
+            
+            document.getElementById('address-tab').classList.add('active');
+            document.getElementById('address').classList.add('active', 'show');
+            
+          
+            document.getElementById('dashboard-tab').classList.remove('active');
+            document.getElementById('dashboard').classList.remove('active', 'show');
+        }
+    </script>
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+    async function updateproFile(){
+        const form = document.getElementById('updateProfileForm');
+        const formData = new FormData(form);
+        const data = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            mobile: formData.get('mobile')
+        };
+
+        try {
+            const response = await fetch('/profile/update', {
+                method: 'PATCH',
+                headers:{
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if(response.ok){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'profile Updated',
+                    text:  'Your profile has been updated successfully..',
+                    confirmButtonText: 'Ok'
+                })
+                .then(() => {
+                    window.location.reload();
+                });
+            }else{
+                const error = await response.text();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update Failed',
+                    text: `Failed to Update profile:${error}`,
+                    confirmButtonText: 'Try Again..'
+                });
+            }
+        } catch (error) {
+            console.error('Error', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An Error occurrd while update your profile. plrase try again later..',
+                confirmButtonText: 'ok'
+
+            });
+            
+        }
+    }
+
+
+    async function deleteAddress(addressId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This action will permanently delete the address.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel",
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch('/delete-address', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ addressId }),
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Address Deleted",
+                        text: "The address has been successfully deleted.",
+                        confirmButtonText: "OK",
+                    }).then(() => {
+                       
+                        window.location.reload();
+                    });
+                } else {
+                    const error = await response.text();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Delete Failed",
+                        text: error || "Could not delete the address. Please try again.",
+                        confirmButtonText: "OK",
+                    });
+                }
+            } catch (error) {
+                console.error("Error deleting address:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred while deleting the address. Please try again later.",
+                    confirmButtonText: "OK",
+                });
+            }
+        }
+    });
+}
+
+function updatePassword(){
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if(!currentPassword || !newPassword|| !confirmPassword){
+        Swal.fire({
+            icon: 'error',
+            title: 'All fields are required...',
+        });
+        return;
+    }
+    
+
+    if(newPassword !== confirmPassword){
+        Swal.fire({
+            icon: 'error',
+            title: 'Password  not match...🤨',
+            text: 'You enterd password and new password is not match...'
+        })
+        return
+    }
+
+    fetch('/update-password-profile', {
+        method: 'POST',
+        headers:{
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify({
+            currentPassword,
+            newPassword
+        })
+    })
+    .then((response) => response.json())
+    .then((data) => {
+       if(!data.success){
+        Swal.fire({
+            icon:'error',
+            title: 'Error occurred'
+        })
+       }else{
+        Swal.fire({
+            icon: 'success',
+            title: 'Password updated Successfully...🤩',
+            showConfirmButton: false,
+        })
+        setTimeout(() => {
+            window.location.reload()
+        },1000)
+       
+       }
+
+    })
+    .catch((error) => {
+        console.log('updatePassword FrontEnd:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Somthing went Wrong...'
+        });
+    })
+}
+
+</script>
+<%- include('../partials/user/footer2') %>
