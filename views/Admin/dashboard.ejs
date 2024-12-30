@@ -1,0 +1,331 @@
+<%- include('../partials/admin/header') %>
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Dashboard</h2>
+                <p>Whole data about your business here</p>
+            </div>
+            <!-- <div>
+                <a href="#" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create
+                    report</a>
+            </div> -->
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-primary-light">
+                            <i class="text-primary material-icons md-monetization_on"></i>
+                        </span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Revenue</h6>
+                            <span>₹<%=salesData.totalSalesAmount.toLocaleString()%></span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-success-light">
+                            <i class="material-icons md-shopping_bag text-success"></i>
+                        </span>
+                        <div class="text">
+                            <h6 class="mb-1">Total Orders</h6>
+                            <span>
+                                <%= totalOrder %>
+                            </span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <!-- <div class="col-lg-3 col-md-6">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-info-light">
+                            <i class="material-icons md-person text-info"></i>
+                        </span>
+                        <div class="text">
+                            <h6 class="mb-1">Total Customers</h6>
+                            <span><%=  %></span>
+                        </div>
+                    </article>
+                </div>
+            </div> 
+            <div class="col-lg-3 col-md-6">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-info-light">
+                            <i class="material-icons md-person text-info"></i>
+                        </span>
+                        <div class="text">
+                            <h6 class="mb-1">Average Orders</h6>
+                            <span><%= averageOrderValue %></span>
+                        </div>
+                    </article>
+                </div>
+            </div>  -->
+        </div>
+
+        <!-- Main Chart with Filters -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="card-title">Sales Statistics</h5>
+                            <select class="form-select" style="width: auto;" id="timeFilter">
+                                <option value="yearly">Yearly</option>
+                                <option value="monthly" selected>Monthly</option>
+                                <option value="weekly">Weekly</option>
+                            </select>
+                        </div>
+                        <div style="height: 400px; position: relative;">
+                            <canvas id="mainChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Products and Categories -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Top 10 Best Selling Products</h5>
+                        <div style="height: 400px; position: relative;">
+                            <canvas id="productsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Top Categories</h5>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="categoriesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Top Brands</h5>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="brandsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+       
+        document.addEventListener('DOMContentLoaded', function () {
+            const salesData = JSON.parse('<%- JSON.stringify(salesData) %>');
+            const productsData = JSON.parse('<%- JSON.stringify(products) %>');
+            const categoriesData = JSON.parse('<%- JSON.stringify(categories) %>');
+            const brandsData = JSON.parse('<%- JSON.stringify(brands) %>');
+
+            
+            const mainChartCtx = document.getElementById('mainChart');
+            if (mainChartCtx) {
+                const mainChart = new Chart(mainChartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: salesData.monthly.labels,
+                        datasets: [{
+                            label: 'Monthly Sales',
+                            data: salesData.monthly.data,
+                            borderColor: '#333333',
+                            backgroundColor: 'rgba(51, 51, 51, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true,
+                            pointBackgroundColor: '#333333',
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return '₹' + context.raw.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return '₹' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+              
+                document.getElementById('timeFilter').addEventListener('change', function (e) {
+                    const timeFrame = e.target.value;
+                    const data = salesData[timeFrame];
+                    mainChart.data.labels = data.labels;
+                    mainChart.data.datasets[0].data = data.data;
+                    mainChart.update();
+                });
+            }
+
+  
+            const productsChartCtx = document.getElementById('productsChart');
+            if (productsChartCtx) {
+                new Chart(productsChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: productsData.map(item => item.productName),
+                        datasets: [{
+                            label: 'Units Sold',
+                            data: productsData.map(item => item.totalQuantitySold),
+                            backgroundColor: 'rgba(51, 51, 51, 0.8)',
+                            borderColor: '#333333',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+           
+            const categoriesChartCtx = document.getElementById('categoriesChart');
+            if (categoriesChartCtx) {
+                const monochromeColors = [
+                    '#000000', '#1a1a1a', '#333333', '#4d4d4d',
+                    '#666666', '#808080', '#999999', '#b3b3b3',
+                    '#cccccc', '#e6e6e6'
+                ];
+
+                new Chart(categoriesChartCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categoriesData.map(item => item.categoryName),
+                        datasets: [{
+                            data: categoriesData.map(item => item.totalQuantitySold),
+                            backgroundColor: monochromeColors,
+                            borderWidth: 1,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    padding: 20
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Brands Chart
+            const brandsChartCtx = document.getElementById('brandsChart');
+            if (brandsChartCtx) {
+                const brandMonochromeColors = [
+                    '#0d0d0d', '#262626', '#404040', '#595959',
+                    '#737373', '#8c8c8c', '#a6a6a6', '#bfbfbf',
+                    '#d9d9d9', '#f2f2f2'
+                ];
+
+                new Chart(brandsChartCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: brandsData.map(item => item.brandName || 'Unknown'),
+                        datasets: [{
+                            data: brandsData.map(item => item.totalQuantitySold),
+                            backgroundColor: brandMonochromeColors,
+                            borderWidth: 1,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    padding: 20,
+                                    generateLabels: function (chart) {
+                                        const data = chart.data;
+                                        if (data.labels.length && data.datasets.length) {
+                                            return data.labels.map((label, i) => {
+                                                const value = data.datasets[0].data[i];
+                                                return {
+                                                    text: `${label} (${value})`,
+                                                    fillStyle: brandMonochromeColors[i],
+                                                    strokeStyle: brandMonochromeColors[i],
+                                                    lineWidth: 1,
+                                                    hidden: isNaN(data.datasets[0].data[i]),
+                                                    index: i
+                                                };
+                                            });
+                                        }
+                                        return [];
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        return `${label}: ${value} units`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+    <%- include('../partials/admin/footer') %>

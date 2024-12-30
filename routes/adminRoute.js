@@ -18,7 +18,7 @@ const uploads =  multer({storage:storage});
 // login management
 router.get('/check', adminController.serverChecking);
 router.get('/signin', adminController.loadSignin);
-router.get('/dashe-board',adminAuth.adminAuth, adminController.loadDasheBoard);
+router.get('/dashboard',adminAuth.adminAuth, adminController.loadDasheBoard);
 router.post('/signin',adminController.adminSignin);
 router.post('/logout',adminController.adminLogout);
 
@@ -78,7 +78,7 @@ router.get('/sales-report', adminAuth.adminAuth,salesReportController.getSaleRep
 router.get('/sales-report-pdf', adminAuth.adminAuth, salesReportController.generateSalesPDF);
 router.get('/sales-report-exel', adminAuth.adminAuth, salesReportController.generateSalesExel);
 
-
+// dash
 
 
 router.use((req,res)=>{

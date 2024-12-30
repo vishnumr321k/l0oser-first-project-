@@ -9,179 +9,272 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Roboto', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
         }
 
         body {
             min-height: 100vh;
-            background: #000;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
+            background-image: url('/img/vishnu2.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 800px;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .image-container {
+            flex: 1;
+            max-width: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .login-container {
-            max-width: 400px;
-            margin: 2rem auto;
-            background: white;
+            flex: 1;
             padding: 2rem;
-            border-radius: 20px;
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 2rem;
             margin-bottom: 1.5rem;
+            text-align: center;
+            color: #000;
         }
 
-        .input-group {
-            margin-bottom: 1.5rem;
+        .input-container {
+            margin-bottom: 1.2rem;
         }
 
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+        .input-container label {
+            display: block;
+            color: #000;
             margin-bottom: 0.5rem;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #000;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-container input:focus {
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
         }
 
         .login-btn {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.8rem;
             background: #000;
-            color: white;
+            color: #fff;
             border: none;
             border-radius: 8px;
-            margin-bottom: 1.5rem;
+            font-weight: bold;
             cursor: pointer;
-        }
-
-        .social-login {
-            display: flex;
-            gap: 1rem;
             margin-bottom: 1rem;
+            transition: transform 0.2s;
         }
 
-        .social-btn {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: white;
+        .login-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .google-btn {
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100%;
+            padding: 0.8rem;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 8px;
+            margin-bottom: 1rem;
             cursor: pointer;
             font-weight: bold;
+            transition: background-color 0.3s;
+            color: #000;
+        }
+
+        .google-btn:hover {
+            background-color: #f5f5f5;
         }
 
         .links {
             text-align: center;
-            color: #666;
-            font-size: 0.9rem;
+            margin-top: 1rem;
         }
 
         .links a {
             color: #000;
             text-decoration: none;
             display: inline-block;
-            margin-top: 10px;
+            margin: 0.5rem 0;
         }
 
-        footer {
-            background: #000;
-            color: white;
-            padding: 2rem;
-            margin-top: auto;
+        .links a:hover {
+            text-decoration: underline;
         }
 
         .error-message {
-            color: red;
-            font-size: 0.75rem;
-            margin-top: 0.5rem;
+            color: #000;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
             display: none;
+        }
+
+        .is-invalid {
+            border-color: #000 !important;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .image-container {
+                max-width: 100%;
+                height: 200px;
+            }
+
+            .login-container {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <main>
+    <div class="container">
+        <div class="image-container">
+            <img src="/img/jishnu.JPG" alt="Login visual" width="400" height="600">
+        </div>
         <div class="login-container">
             <h1>Login</h1>
-
-            <form id="login-form" method="post" action="/login">
-                <div class="input-group">
-                    <input type="email" id="email" placeholder="Email" name="email" >
-                    <div id="error-email" class="error-message"></div>
+            <form id="loginForm" method="post" action="/login" onsubmit="return validateForm();">
+                <div class="input-container">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email">
+                    <p class="error-message" id="emailError"></p>
                 </div>
 
-                <div class="input-group">
-                    <input type="password" id="password" placeholder="Password" name="password" >
-                    <div id="error-password" class="error-message"></div>
+                <div class="input-container">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password">
+                    <p class="error-message" id="passwordError"></p>
                 </div>
 
                 <button type="submit" class="login-btn">Login</button>
+                <p id="formError" class="error-message"></p>
+
+                <a href="/auth/google" class="google-btn">
+                    Continue with Google
+                </a>
+
+                <div class="links">
+                    <a href="/forgot-password">Forgot Password?</a>
+                    <br>
+                    Don't have an account? <a href="/signup">Sign up</a>
+                </div>
             </form>
-
-            <div class="social-login">
-                <a href="/auth/google" class="social-btn">Login with Google</a>
-            </div>
-
-            <div class="links">
-                <a href="/forgot-password">Forgot Password?</a>
-                <br>
-                Don't have an account? <a href="/signup">Sign Up</a>
-            </div>
         </div>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 Your Company. All rights reserved.</p>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('login-form');
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            const errorEmail = document.getElementById('error-email');
-            const errorPassword = document.getElementById('error-password');
+        function validateForm() {
+            const emailInput = document.getElementById("email");
+            const passwordInput = document.getElementById("password");
+            const emailError = document.getElementById("emailError");
+            const passwordError = document.getElementById("passwordError");
+            const formError = document.getElementById("formError");
 
-            form.addEventListener('submit', function (e) {
-                let valid = true;
+            // Reset errors
+            emailError.style.display = 'none';
+            passwordError.style.display = 'none';
+            formError.style.display = 'none';
+            emailInput.classList.remove("is-invalid");
+            passwordInput.classList.remove("is-invalid");
 
-                // Reset error messages initially
-                errorEmail.style.display = 'none';
-                errorPassword.style.display = 'none';
+            let valid = true;
 
-                // Validate email
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(emailInput.value.trim())) {
-                    errorEmail.style.display = 'block';
-                    errorEmail.innerHTML = 'Invalid email format';
-                    valid = false;
-                } else {
-                    errorEmail.style.display = 'none';
-                    errorEmail.innerHTML = '';
-                }
+            // Validate email
+            if (!emailInput.value.trim()) {
+                emailError.textContent = "Email is required.";
+                emailError.style.display = 'block';
+                emailInput.classList.add("is-invalid");
+                valid = false;
+            } else if (!/\S+@\S+\.\S+/.test(emailInput.value.trim())) {
+                emailError.textContent = "Please enter a valid email address.";
+                emailError.style.display = 'block';
+                emailInput.classList.add("is-invalid");
+                valid = false;
+            }
 
-                // Validate password
-                const password = passwordInput.value;
-                if (password.length < 8) {
-                    errorPassword.style.display = 'block';
-                    errorPassword.innerHTML = 'Password must be at least 8 characters long';
-                    valid = false;
-                } else {
-                    errorPassword.style.display = 'none';
-                    errorPassword.innerHTML = '';
-                }
+            // Validate password
+            if (!passwordInput.value.trim()) {
+                passwordError.textContent = "Password is required.";
+                passwordError.style.display = 'block';
+                passwordInput.classList.add("is-invalid");
+                valid = false;
+            } else if (passwordInput.value.trim().length < 6) {
+                passwordError.textContent = "Password must be at least 6 characters.";
+                passwordError.style.display = 'block';
+                passwordInput.classList.add("is-invalid");
+                valid = false;
+            }
 
-                if (!valid) {
-                    e.preventDefault(); 
-                }
-            });
-        });
+            if (!valid) {
+                formError.textContent = "Please fix the errors above and try again.";
+                formError.style.display = 'block';
+            }
+
+            return valid;
+        }
     </script>
 </body>
 </html>

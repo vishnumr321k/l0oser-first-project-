@@ -7,6 +7,7 @@ const Order = require('../model/user/orderSchema');
 
 
 
+
 const serverChecking = async(req, res) =>{
     try {
         res.send('The server is success');
@@ -20,7 +21,7 @@ const serverChecking = async(req, res) =>{
 const loadSignin = async (req, res) => {
     try {
         if(req.session.adminId){
-            res.redirect("/admin/dashe-board")
+            res.redirect("/admin/dashboard")
         }
         res.render('admin-login');
     } catch (error) {
@@ -28,15 +29,288 @@ const loadSignin = async (req, res) => {
         res.status(404).send('Page not Found');
     }
 }
-
+// Backend Controller Functions
 
 const loadDasheBoard = async (req, res) => {
     try {
-        console.log('The Dasheboard loaded');
-        res.render('dasheBoard');
+        const salesData = await getTotalSales();
+        const products = await getMostSellingProducts();
+        const categories = await getMostSellingCategories();
+        const brands = await getMostSellingBrands();
+        const orders = await Order.find({});
+        
+        const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+        const count = orders.length;
+        const averageOrderValue = count > 0 ? (totalRevenue / count).toFixed(2) : 0;
+
+        res.render('dashboard', {
+            salesData,
+            products,
+            categories,
+            brands,
+            totalOrder: count,
+            totalRevenue,
+            averageOrderValue
+        });
     } catch (error) {
-        console.log(error);
-        res.status(404).send('Page not Found');
+        console.error('Dashboard loading error:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+async function getTotalSales() {
+    try {
+        const totalSales = await Order.aggregate([
+            {
+                $match: {
+                    status: { $ne: 'Cancelled' }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalSalesAmount: { $sum: "$totalAmount" }
+                }
+            }
+        ]);
+
+        const currentYear = new Date().getFullYear();
+        const startOfYear = new Date(currentYear, 0, 1);
+
+        // Weekly Sales
+        const weeklySales = await Order.aggregate([
+            {
+                $match: {
+                    orderDate: { $gte: startOfYear },
+                    status: { $ne: 'Cancelled' }
+                }
+            },
+            {
+                $group: {
+                    _id: { $week: "$orderDate" },
+                    sales: { $sum: "$totalAmount" }
+                }
+            },
+            { $sort: { "_id": 1 } }
+        ]);
+
+        // Monthly Sales
+        const monthlySales = await Order.aggregate([
+            {
+                $match: {
+                    orderDate: { $gte: startOfYear },
+                    status: { $ne: 'Cancelled' }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: "$orderDate" },
+                    sales: { $sum: "$totalAmount" }
+                }
+            },
+            { $sort: { "_id": 1 } }
+        ]);
+
+        // Yearly Sales
+        const yearlySales = await Order.aggregate([
+            {
+                $match: {
+                    status: { $ne: 'Cancelled' }
+                }
+            },
+            {
+                $group: {
+                    _id: { $year: "$orderDate" },
+                    sales: { $sum: "$totalAmount" }
+                }
+            },
+            { $sort: { "_id": 1 } },
+            { $limit: 5 }
+        ]);
+
+        // Format data for charts
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        // Process weekly data
+        const weeklyData = {
+            labels: Array.from({ length: 52 }, (_, i) => `Week ${i + 1}`),
+            data: Array(52).fill(0)
+        };
+        weeklySales.forEach(item => {
+            if (item._id >= 0 && item._id < 52) {
+                weeklyData.data[item._id] = item.sales;
+            }
+        });
+
+        // Process monthly data
+        const monthlyData = {
+            labels: monthNames,
+            data: Array(12).fill(0)
+        };
+        monthlySales.forEach(item => {
+            monthlyData.data[item._id - 1] = item.sales;
+        });
+
+        // Process yearly data
+        const yearlyData = {
+            labels: yearlySales.map(item => item._id.toString()),
+            data: yearlySales.map(item => item.sales)
+        };
+
+        return {
+            totalSalesAmount: totalSales[0]?.totalSalesAmount || 0,
+            weekly: weeklyData,
+            monthly: monthlyData,
+            yearly: yearlyData
+        };
+    } catch (error) {
+        console.error("Error calculating sales data:", error);
+        throw error;
+    }
+}
+
+async function getMostSellingProducts() {
+    try {
+        const result = await Order.aggregate([
+            { $unwind: "$products" },
+            {
+                $group: {
+                    _id: "$products.productId",
+                    totalQuantitySold: { $sum: "$products.quantity" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            { $unwind: "$productDetails" },
+            {
+                $project: {
+                    _id: 1,
+                    productName: "$productDetails.productName",
+                    totalQuantitySold: 1
+                }
+            },
+            { $sort: { totalQuantitySold: -1 } },
+            { $limit: 10 }
+        ]);
+
+        return result.map(item => ({
+            ...item,
+            _id: item._id.toString()
+        }));
+    } catch (error) {
+        console.error("Error finding most selling products:", error);
+        return [];
+    }
+}
+
+async function getMostSellingCategories() {
+    try {
+        const result = await Order.aggregate([
+            { $unwind: "$products" },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "products.productId",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            { $unwind: "$productDetails" },
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "productDetails.category",
+                    foreignField: "_id",
+                    as: "categoryDetails"
+                }
+            },
+            { $unwind: "$categoryDetails" },
+            {
+                $group: {
+                    _id: "$categoryDetails._id",
+                    categoryName: { $first: "$categoryDetails.name" },
+                    totalQuantitySold: { $sum: "$products.quantity" }
+                }
+            },
+            { $sort: { totalQuantitySold: -1 } },
+            { $limit: 10 }
+        ]);
+
+        return result.map(item => ({
+            ...item,
+            _id: item._id.toString()
+        }));
+    } catch (error) {
+        console.error("Error finding most selling categories:", error);
+        return [];
+    }
+}
+
+async function getMostSellingBrands() {
+    try {
+        const result = await Order.aggregate([
+            // Unwind the products array to work with individual products
+            { $unwind: "$products" },
+            
+            // Lookup product details
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "products.productId",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            { $unwind: "$productDetails" },
+
+            // Group by brand and calculate total quantity sold
+            {
+                $group: {
+                    _id: "$productDetails.brand",
+                    totalQuantitySold: { $sum: "$products.quantity" },
+                    totalRevenue: { $sum: { $multiply: ["$products.price", "$products.quantity"] } }
+                }
+            },
+
+            // Filter out null or empty brand names
+            {
+                $match: {
+                    "_id": { $ne: null, $ne: "" }
+                }
+            },
+
+            // Sort by quantity sold in descending order
+            { $sort: { totalQuantitySold: -1 } },
+
+            // Limit to top 10 brands
+            { $limit: 10 },
+
+            // Project final format
+            {
+                $project: {
+                    _id: 1,
+                    brandName: "$_id",
+                    totalQuantitySold: 1,
+                    totalRevenue: 1
+                }
+            }
+        ]);
+
+        // Convert ObjectIds to strings for frontend consumption
+        return result.map(item => ({
+            ...item,
+            _id: item._id.toString()
+        }));
+
+    } catch (error) {
+        console.error("Error finding most selling brands:", error);
+        return [];
     }
 }
 
@@ -61,7 +335,7 @@ const adminSignin = async(req, res) =>{
         req.session.adminId =  admin._id;
 
         console.log("Admin Authetication Successfully...😁");
-        return res.redirect('/admin/dashe-board');
+        return res.redirect('/admin/dashboard');
     } catch (error) {
         console.log(`Error during sign-in: ${error}`);
         return res.status(500).send("Internal server error");
