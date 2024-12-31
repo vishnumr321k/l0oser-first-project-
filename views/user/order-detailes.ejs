@@ -245,7 +245,8 @@
                                         </p>
                                         <p>Payment Status:- <%= paymentStatus %>
                                         </p>
-                                        <%if(paymentStatus==='Failure' ){%>
+                                        <%if(paymentStatus==='Failure') {%> 
+                                            
                                             <button class="evt-action-button" type="submit"
                                                 onclick="retryPaymnet('<%= order_id %>', '<%= totalAmount %>')">Retry
                                                 Pay</button>
@@ -430,8 +431,8 @@
                                             Swal.fire({
                                                 icon: 'success',
                                                 title: 'Paymnet is SuccessFullyCompleated...🤩',
-                                                confirmButton:false,
-                                                
+                                                confirmButton: false,
+
                                             })
                                             setTimeout(() => {
                                                 window.location.reload()

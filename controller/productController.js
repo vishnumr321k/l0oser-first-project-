@@ -459,7 +459,7 @@ const placeOrder = async (req, res) => {
 
 const orderDetails = async (req, res) =>{
     try {
-        const orderId = req.query.orderId;
+        const orderId = req.query.orderId || req.body.orderId;
         
         console.log('orderId:', orderId);
 
@@ -538,6 +538,11 @@ const orderCancellation = async (req, res) =>{
         
         if(orderCancell){
             order.status = 'Cancelled';
+            if(order.paymentStatus === 'Failure'){
+                order.paymentStatus = 'Failure'
+            }else{
+                order.paymentStatus = 'Refund'
+            }
             
             
         }else{
@@ -552,14 +557,18 @@ const orderCancellation = async (req, res) =>{
         if(!wallet){
             wallet = new Wallet({userId:userId});
         }
-
-        wallet.balance += order.totalAmount;
+        if(order.paymentStatus === 'Failure'){
+            console.log('User is not payment compleated')
+        }else{
+            wallet.balance += order.totalAmount;
         wallet.transactions.push({
                 whichTransaction: 'Creadit',
                 orderId: order._id,
                 transactionAmount:Number(productPrice)
                 
         })
+        }
+        
         await wallet.save();
         // const orderCancell = await Order.findByIdAndUpdate(orderId,
         //     {status:'Cancelled'},
@@ -750,7 +759,7 @@ const orderInvoiceDownlod = async (req, res) => {
         doc.fontSize(12)
            .font('Helvetica');
         
-        doc.text(`Order ID: ${order._id.toString().slice(-6).toUpperCase()}`)
+        doc.text(`Order ID: ${order.orderId}`)
            .text(`Order Date: ${new Date(order.orderDate).toLocaleDateString()}`)
            .text(`Payment Method: ${order.paymentMethord}`)
            .moveDown();
@@ -761,6 +770,7 @@ const orderInvoiceDownlod = async (req, res) => {
            .text('Billing Details:', { continued: true, width: 250 })
            .font('Helvetica')
            .moveDown()
+           .text()
            .text(order.address.name)
            .text(order.address.streetAddress)
            .text(`${order.address.city}, ${order.address.state}`)
@@ -772,7 +782,7 @@ const orderInvoiceDownlod = async (req, res) => {
            .text('Shipping Details:', 300, customerStartY, { width: 250 })
            .font('Helvetica')
            .moveDown()
-           .text(order.address.name, 300, doc.y - 12)
+           .text(order.address.name, 300)
            .text(order.address.streetAddress, 300)
            .text(`${order.address.city}, ${order.address.state}`, 300)
            .text(`PIN: ${order.address.pincode}`, 300)

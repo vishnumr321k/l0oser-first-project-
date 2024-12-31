@@ -114,8 +114,10 @@ router.post('/retry-payment', paymetnController.retryPayment)
 
 
 // coupen
+router.get('/coupon-list', coupencontroller.getCouponList)
 router.post('/apply-coupom', coupencontroller.applyCoupon)
 router.post('/remove-coupon', coupencontroller.removeCoupon);
+
 
 // wishlist
 router.get('/wishlist-page', wishListController.getWishList);

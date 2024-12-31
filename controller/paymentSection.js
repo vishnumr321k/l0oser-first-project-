@@ -112,7 +112,7 @@ const verifyPayment = async (req, res) => {
 
             order.paymentStatus = 'Complete'
             order.status = 'Processing'
-
+            order.lastUpdate = new Date()          
             await order.save();
             if (!order) {
                 console.log('The Order is not Found...🥲')
@@ -136,7 +136,7 @@ const verifyPayment = async (req, res) => {
             await order.save();
             
             res.status(404).json(
-                { success: false, message: 'Invalid signature...🤦‍♂️' }
+                { success: false, message: 'Invalid signature...🤦‍♂️' , orderId}
             );
         }
     } catch (error) {
@@ -144,8 +144,6 @@ const verifyPayment = async (req, res) => {
         res.status(500).json({ message: 'Internal server Error..', error: error.message });
     }
 }
-
-
 
 const retryPayment = async(req, res) => {
     try {

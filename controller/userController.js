@@ -105,8 +105,6 @@ const loadHomepage = async (req, res) => {
     }
 }
 
-
-
 const userSignup = async (req, res) => {
     const { name, email, password, cpassword, mobile } = req.body;
     try {
@@ -227,7 +225,7 @@ const userLogin = async (req, res) => {
         const is_passwordMatch = await bcrypt.compare(password, user.password);
         console.log('is_passwordMatch:', is_passwordMatch)
         if (!is_passwordMatch) {
-            return res.status(401).render('login');
+            return res.status(401).render('login', {passwordError: 'INvalid email or password'});
         }
 
         req.session.userId = user._id;
@@ -538,6 +536,7 @@ const updatePasswordInProfile = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal server error' });
     }
 };
+
 
 module.exports = {
     loadLogin,

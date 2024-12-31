@@ -345,6 +345,8 @@
                                                                 <td style="color: orange;"><%= order.paymentStatus %></td>
                                                             <% } else if (order.paymentStatus === 'Failure') { %>
                                                                 <td style="color: red;"><%= order.paymentStatus %></td>
+                                                                <% } else if (order.paymentStatus === 'Refund') { %>
+                                                                    <td style="color: rgb(19, 223, 12);"><%= order.paymentStatus %></td>    
                                                             <% } else { %>
                                                                 <td><%= order.paymentStatus || 'Unknown' %></td>
                                                             <% } %>

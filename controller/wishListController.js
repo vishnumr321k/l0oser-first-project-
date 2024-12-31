@@ -3,33 +3,28 @@ const Cart = require('../model/user/cartSchema');
 const WishList = require('../model/user/wishlistSchema');
 
 const getWishList = async (req, res) => {
-    try {
-        const userId = req.session.userId;
-        const wishList  = await WishList.findOne({userId}).populate('products.productId');
-        const products = await Product.find()
-        const cart = await Cart.findOne({userId})
-        const cartProduct = cart ? cart.products : [];
-        if(wishList.products.length < 1){
-            return res.render('wishlist', {
-                products: []
-            })
-        }
-       
-        console.log('wishList.product:', wishList)
-      
-        console.log('wishList:', wishList)
+  try {
+      const userId = req.session.userId;
+      const wishList = await WishList.findOne({ userId }).populate('products.productId');
+      const cart = await Cart.findOne({ userId });
 
-        console.log('The WishList page is Loaded...🤩');
-        res.render('wishlist', {
-            products: wishList.products,
-            
+      const cartProductIds = cart ? cart.products.map(product => product.productId.toString()) : [];
 
-        });
-    } catch (error) {
-        console.log('getWishList:', error);
-    }
-}
+      if (!wishList || wishList.products.length < 1) {
+          return res.render('wishlist', {
+              products: [],
+              cartProductIds: []
+          });
+      }
 
+      res.render('wishlist', {
+          products: wishList.products,
+          cartProductIds: cartProductIds,
+      });
+  } catch (error) {
+      console.log('getWishList:', error);
+  }
+};
 
 const addToCartDirectInWishList = async (req, res) => {
     try {

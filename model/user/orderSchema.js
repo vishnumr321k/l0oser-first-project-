@@ -51,12 +51,11 @@ const orderSchema = new Schema({
     paymentMethord:{
         type: String,
         enum:["COD", "Online"],
-        
         required: true,
     },
     paymentStatus:{
         type: String,
-        enum: ['Pending', 'Complete', 'Failure'],
+        enum: ['Pending', 'Complete', 'Failure', 'Refund'],
         default:'Pending',
     },
     address:{
@@ -93,14 +92,13 @@ const orderSchema = new Schema({
             required: true 
         },
     },
-    orderDate:{
+    orderDate: {
         type: Date,
-        default: Date.now()
-        
+        default: () => Date.now()
     },
-    lastUpdate:{
+    lastUpdate: {
         type: Date,
-        default: Date.now()
+        default: () => Date.now()
     },
     coupenCode:{
       type: String,

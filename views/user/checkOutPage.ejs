@@ -341,9 +341,11 @@
 
 
                                 <!-- Coupon Section -->
+                                <span><a href="/coupon-list">Coupons</a></span>
                                 <form id="applyCouponForm" onsubmit="applyCoupon(event)">
                                     <div class="coupon-section">
-                                        <h5 class="mb-3">Apply Coupon</h5>
+                                        
+                                        <h5 class="mb-3" style="color: black;">Apply Coupon</h5>
                                         <div class="input-group">
                                             <input type="text" id="couponCode" name="couponCode" class="form-control"
                                                 placeholder="Enter coupon code" required>
@@ -422,17 +424,18 @@
 
 
         <script>
-
-
+            const isTestMode = true; 
+            const razorpayKey = 'rzp_test_bZgzQWFVKh7jkQ';
+        
             function selectAddress(theIndex) {
                 const theBox = document.querySelectorAll('.address-card');
                 theBox.forEach(box => box.classList.remove('selected'));
-
+        
                 document.getElementById(`address-${theIndex}`).checked = true;
                 document.getElementById(`card-${theIndex}`).classList.add('selected');
                 document.getElementById('selectedAddressId').value = theIndex;
             }
-
+        
             function paymentSelection() {
                 const paymentMethod = document.getElementById('payment-method').value;
                 if (paymentMethod !== '') {
@@ -441,218 +444,295 @@
                     document.getElementById('selectedPaymentMethod').value = '';
                 }
             }
-
+        
             function validateAddressSelection() {
                 const selectedAddressId = document.getElementById('selectedAddressId').value;
                 const selectedPaymentMethod = document.getElementById('selectedPaymentMethod').value;
-
+        
                 if (!selectedAddressId) {
                     Swal.fire({
                         icon: 'warning',
-                        title: "Select Address...😶‍🌫️",
-                        text: 'Please select an address before placing the order...😁'
+                        title: "Select Address",
+                        text: 'Please select an address before placing the order.'
                     });
                     return false;
                 }
-
+        
                 if (!selectedPaymentMethod) {
                     Swal.fire({
                         icon: 'warning',
-                        title: "Select Payment Method...😶‍🌫️",
-                        text: 'Please select a payment method before placing the order...😁'
+                        title: "Select Payment Method",
+                        text: 'Please select a payment method before placing the order.'
                     });
                     return false;
                 }
-
+        
                 return true;
             }
-
-
-
-
+        
+            // function theStartingTimeOfPayment(event) {
+            //     event.preventDefault();
+        
+            //     if (!validateAddressSelection()) {
+            //         return;
+            //     }
+        
+            //     const subtotal = parseInt(document.querySelector('.finaltotal').textContent.replace('₹', '').trim());
+            //     const selectPaymentMethod = document.getElementById('selectedPaymentMethod').value;
+        
+            //     if (selectPaymentMethod === 'Razorpay') {
+            //         fetch('/create-razorpay-order', {
+            //             method: 'POST',
+            //             headers: { 'Content-Type': 'application/json' },
+            //             body: JSON.stringify({
+            //                 selectedAddressId: document.getElementById('selectedAddressId').value,
+            //                 subtotal,
+            //                 userId: document.getElementById('userId').value,
+            //                 cartProduct: document.getElementById('cartProduct').value
+            //             })
+            //         })
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             const options = {
+            //                 key: razorpayKey,
+            //                 amount: data.amount,
+            //                 currency: data.currency,
+            //                 name: 'Your Store',
+            //                 description: 'Thank you for your purchase!',
+            //                 image: '/img/logo.png',
+            //                 order_id: data.id,
+            //                 handler: function (response) {
+            //                     fetch('/verify-Payment', {
+            //                         method: 'POST',
+            //                         headers: { 'Content-Type': 'application/json' },
+            //                         body: JSON.stringify({
+            //                             razorpayOrderId: response.razorpay_order_id,
+            //                             razorpayPaymentId: response.razorpay_payment_id,
+            //                             razorpaySignature: response.razorpay_signature,
+            //                         })
+            //                     })
+            //                     .then(res => res.json())
+            //                     .then(verificationData => {
+            //                         if (verificationData.success) {
+            //                             window.location.href = `/order-success/${verificationData.orderId}`;
+            //                         } else {
+            //                             if (isTestMode) {
+            //                                 console.error('Test Mode: Payment verification failed', verificationData);
+            //                             }
+            //                             window.location.href = `/profile`;
+            //                             Swal.fire({
+            //                                 icon: 'error',
+            //                                 title: 'Payment Failed',
+            //                                 text: 'Payment verification failed. Please try again.'
+            //                             });
+            //                         }
+            //                     })
+            //                     .catch(error => {
+            //                         console.error('Payment Verification Error:', error);
+            //                         Swal.fire({
+            //                             icon: 'error',
+            //                             title: 'Error',
+            //                             text: 'An error occurred during payment verification. Please try again.'
+            //                         });
+            //                     });
+            //                 },
+            //                 prefill: {
+            //                     name: userId.name || 'Guest',
+            //                     email: userId.email || 'guest@example.com',
+            //                     contact: userId.mobile || '1234567890',
+            //                 },
+            //                 theme: {
+            //                     color: '#000000'
+            //                 }
+            //             };
+        
+            //             const razorpayPage = new Razorpay(options);
+            //             razorpayPage.open();
+            //         })
+            //         .catch(error => {
+            //             console.error('theStartingTimeOfPayment:', error);
+            //         });
+            //     } else if (selectPaymentMethod === 'COD') {
+            //         if (subtotal > 1000) {
+            //             Swal.fire({
+            //                 icon: 'error',
+            //                 title: 'COD not available',
+            //                 text: 'Cash on Delivery is not available for orders above ₹1000.'
+            //             });
+            //         } else {
+            //             document.getElementById('placeorderform').submit();
+            //         }
+            //     }
+            // }
+            
             function theStartingTimeOfPayment(event) {
-                event.preventDefault()
+    event.preventDefault();
 
-                if (!validateAddressSelection()) {
-                    return
-                }
+    if (!validateAddressSelection()) {
+        return;
+    }
 
-                console.log('subtotal', parseInt(document.querySelector('.finaltotal').textContent.replace('₹', '').trim()))
-                const selectPaymentMethod = document.getElementById('selectedPaymentMethod').value;
-                console.log("selectPaymentMethod:", selectPaymentMethod);
-                if (selectPaymentMethod === 'Razorpay') {
-                    fetch('/create-razorpay-order', {
+    const subtotal = parseInt(document.querySelector('.finaltotal').textContent.replace('₹', '').trim());
+    const selectPaymentMethod = document.getElementById('selectedPaymentMethod').value;
+
+    if (selectPaymentMethod === 'Razorpay') {
+        fetch('/create-razorpay-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                selectedAddressId: document.getElementById('selectedAddressId').value,
+                subtotal,
+                userId: document.getElementById('userId').value,
+                cartProduct: document.getElementById('cartProduct').value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const options = {
+                key: razorpayKey,
+                amount: data.amount,
+                currency: data.currency,
+                name: 'L0oser',
+                description: 'Thank you for your purchase!',
+                image: '/img/logo.png',
+                order_id: data.id,
+                handler: function (response) {
+                    fetch('/verify-Payment', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            selectedAddressId: document.getElementById('selectedAddressId').value,
-                            subtotal: parseInt(document.querySelector('.finaltotal').textContent.replace('₹', '').trim()),
-                            userId: document.getElementById('userId').value,
-                            cartProduct: document.getElementById('cartProduct').value
+                            razorpayOrderId: response.razorpay_order_id,
+                            razorpayPaymentId: response.razorpay_payment_id,
+                            razorpaySignature: response.razorpay_signature,
                         })
                     })
-                        .then(response => response.json())
-                        .then(data => {
-                            const options = {
-                                key: 'rzp_test_bZgzQWFVKh7jkQ',
-                                amount: data.amount,
-                                currency: data.currency,
-                                name: 'L0oser',
-                                description: 'Thank you for your purchase!',
-                                image: '/img/zero.png',
-                                order_id: data.id,
-                                handler: function (response) {
-                                    fetch('/verify-Payment', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                            razorpayOrderId: response.razorpay_order_id,
-                                            razorpayPaymentId: response.razorpay_payment_id,
-                                            razorpaySignature: response.razorpay_signature,
-                                        })
-                                    })
-                                        .then(res => res.json())
-                                        .then(verificationData => {
-                                            if (verificationData.success) {
-                                                window.location.href = `/order-success/${verificationData.orderId}`;
-                                            } else {
-                                                Swal.fire({
-                                                    icon: 'error',
-                                                    title: 'Payment Failed...'
-                                                })
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.error('Payment Verification Error:', error);
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Error',
-                                                text: 'An error occured while veifying the payment. Please try again...'
-                                            })
-
-                                        });
-
-                                },
-                                prefill: {
-                                    name: userId.name || 'Guest',
-                                    email: userId.email || 'guest@gmnail.com',
-                                    contact: userId.mobile || '1234567890',
-                                },
-                                theme: {
-                                    color: '#00000'
-                                }
-                            };
-                            console.log('opening razorpay');
-
-                            const razorpayPage = new Razorpay(options);
-                            razorpayPage.open();
-                        })
-                        .catch(error => console.error('theStartingTimeOfPayment:', error.response || error));
-                }
-                else if (selectPaymentMethod === 'COD') {
-                    const subtotal = parseInt(document.querySelector('.finaltotal').textContent.replace('₹', '').trim())
-                    if (subtotal > 1000) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'COD not available for orders above ₹1000...😏'
-                        })
-                    } else {
-                        document.getElementById('placeorderform').submit();
-                    }
-
-
-                }
-            }
-
-            console.log(document.getElementById('userId').value);
-            console.log(document.getElementById('cartProduct').value);
-
-
-            function applyCoupon(event) {
-                event.preventDefault();
-
-                const couponCode = document.getElementById('couponCode').value;
-                const subTotal = document.querySelector('.subtotal').textContent.replace('₹', '');
-                const finalTotal = document.querySelector('.finaltotal').textContent.replace('₹', '');
-                console.log('couponCode:', couponCode)
-                console.log('subTotal:', subTotal)
-                console.log('finalTotal:', finalTotal)
-
-                fetch('/apply-coupom', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        couponCode,
-                        finalTotal
-                    }),
-
-                })
-                    .then((response) => response.json())
-                    .then(data => {
-                        if (data.success) {
-
-                            document.querySelector('.finaltotal').textContent = `₹${data.newSubtotal}`;
-
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Coupon Applied...🤩',
-                                text: `Update Discount...${data.discount}`
-                            })
-
-                            document.querySelector('.discountPrice').textContent = `₹${data.discount}`;
-
+                    .then(res => res.json())
+                    .then(verificationData => {
+                        if (verificationData.success) {
+                            window.location.href = `/order-success/${verificationData.orderId}`;
                         } else {
+                           
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Invalid Coupon...😶‍🌫️',
-                                text: data.message
-                            })
+                                title: 'Payment Failed',
+                                text: 'Payment verification failed. Please try again.'
+                            });
+                            setTimeout(() => {
+                                window.location.href = `/home`;
+                            },1000)
                         }
                     })
                     .catch(error => {
-                        console.log('applyCoupon:', error);
-                    })
+                        console.error('Payment Verification Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred during payment verification. Please try again.'
+                        });
+                    });
+                },
+                prefill: {
+                    name: userId.name || 'Guest',
+                    email: userId.email || 'guest@example.com',
+                    contact: userId.mobile || '1234567890',
+                },
+                theme: {
+                    color: '#000000'
+                },
+                modal: {
+                  
+                    ondismiss: function () {
+                       
+                       
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Payment Cancelled',
+                            text: 'You Payment has been faile. Please check profile order to retry Payment...😶‍🌫️.'
+                        });
+                        setTimeout(() => {
+                            // window.location.href = `/order-details?orderId=${data.orderId}`;
+                            window.location.href = '/profile'
+                        },2000)
+                    }
+                }
+            };
 
-            }
+            const razorpayPage = new Razorpay(options);
+            razorpayPage.open();
+        })
+        .catch(error => {
+            console.error('theStartingTimeOfPayment:', error);
+        });
+    } else if (selectPaymentMethod === 'COD') {
+        if (subtotal > 1000) {
+            Swal.fire({
+                icon: 'error',
+                title: 'COD not available',
+                text: 'Cash on Delivery is not available for orders above ₹1000.'
+            });
+        } else {
+            document.getElementById('placeorderform').submit();
+        }
+    }
+}
 
-
-            function removeCoupon(event) {
+        
+            function applyCoupon(event) {
                 event.preventDefault();
-
-                const subTotal = document.querySelector('.subtotal').textContent;
-
-                console.log("subTotal:", subTotal)
-
-                fetch('/remove-coupon', {
+        
+                const couponCode = document.getElementById('couponCode').value;
+                const finalTotal = parseInt(document.querySelector('.finaltotal').textContent.replace('₹', '').trim());
+                console.log('couponCode:', couponCode);
+                console.log('finalTotal:', finalTotal)
+                fetch('/apply-coupom', {
                     method: 'POST',
-                    headers: {
+                    headers: { 
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ subTotal })
+                    body: JSON.stringify({ 
+                        couponCode, 
+                        finalTotal
+                    })
                 })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-
-                            document.querySelector('.finaltotal').textContent = `${data.defultSubtotal}`;
-
-
-                        }
-                        window.location.reload();
-                    })
-                    .catch((error) => {
-                        console.log('removeCoupon:', error);
-
-                    })
-
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelector('.finaltotal').textContent = `₹${data.newSubtotal}`;
+                        document.querySelector('.discountPrice').textContent = `₹${data.discount}`;
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Coupon Applied',
+                            text: `Discount applied: ₹${data.discount}`
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid Coupon',
+                            text: data.message
+                        });
+                    }
+                })
+                .catch(error => console.error('applyCoupon:', error));
             }
-
+        
+            function removeCoupon(event) {
+                event.preventDefault();
+        
+                fetch('/remove-coupon', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelector('.finaltotal').textContent = `₹${data.defaultSubtotal}`;
+                        document.querySelector('.discountPrice').textContent = `₹0`;
+                        window.location.reload();
+                    }
+                })
+                .catch(error => console.error('removeCoupon:', error));
+            }
         </script>
+        
 
         <%- include('../partials/user/footer2') %>

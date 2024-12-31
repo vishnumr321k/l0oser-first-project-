@@ -84,7 +84,7 @@ const getSaleReport = async (req, res) => {
             totalPage: Math.ceil(totalOrderCount / limit),
             limit: Number(limit),
             totalOrderCount,
-            totalDiscount
+            totalDiscount: totalDiscount.toFixed(2)
         });
     } catch (error) {
         console.log('getSaleReport:', error);
@@ -120,9 +120,9 @@ const generateSalesPDF = async (req, res) => {
 
         
         const summaryData = [
-            { label: 'Total Sales', value: `₹${totalSales.toLocaleString()}` },
+            { label: 'Total Sales', value: `Rs${totalSales.toLocaleString()}` },
             { label: 'Total Orders', value: totalOrders },
-            { label: 'Total Discount', value: `₹${totalDiscount.toLocaleString()}` },
+            { label: 'Total Discount', value: `Rs${totalDiscount.toLocaleString()}` },
             { label: 'Total Customers', value: uniqueCustomers }
         ];
 
@@ -222,10 +222,10 @@ const generateSalesPDF = async (req, res) => {
             doc.text(new Date(order.orderDate).toLocaleDateString(), xPosition, yPosition);
             xPosition += columnWidths[4];
             
-            doc.text(`₹${order.discount || 0}`, xPosition, yPosition);
+            doc.text(`Rs${order.discount || 0}`, xPosition, yPosition);
             xPosition += columnWidths[5];
             
-            doc.text(`₹${order.totalAmount}`, xPosition, yPosition);
+            doc.text(`Rs${order.totalAmount}`, xPosition, yPosition);
 
            
             doc.moveTo(50, yPosition + 15)
@@ -284,9 +284,9 @@ const generateSalesExel = async (req, res) => {
         worksheet.getCell('A3').font = { bold: true, size: 12 };
 
         const summaryData = [
-            ['Total Sales:', `₹${totalSales.toLocaleString()}`],
+            ['Total Sales:', `Rs${totalSales.toLocaleString()}`],
             ['Total Orders:', totalOrders],
-            ['Total Discount:', `₹${totalDiscount.toLocaleString()}`],
+            ['Total Discount:', `Rs${totalDiscount.toLocaleString()}`],
             ['Total Customers:', uniqueCustomers]
         ];
 
@@ -337,8 +337,8 @@ const generateSalesExel = async (req, res) => {
                 products: order.products.map(product => product.productId.productName).join(', '),
                 quantity: order.products.map(product => product.quantity).join(', '),
                 date: new Date(order.orderDate).toLocaleDateString(),
-                discount: `₹${(order.discount || 0).toLocaleString()}`,
-                finalAmount: `₹${order.totalAmount.toLocaleString()}`
+                discount: `Rs${(order.discount || 0).toLocaleString()}`,
+                finalAmount: `Rs${order.totalAmount.toLocaleString()}`
             });
 
             if (i % 2 === 1) {

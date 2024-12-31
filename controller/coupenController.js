@@ -8,6 +8,8 @@ const getCoupenPage = async (req, res) => {
         if(req.query.msg){
             message = req.query.msg
         }
+
+
         console.log('The Coupen page is loaded...🕺');
         res.render('coupen', {coupens,message}
         );
@@ -20,11 +22,11 @@ const creteCoupen = async (req, res) => {
     try {
         const {couponCode, discountPercentage, minimumPrice, endDate} = req.body;
         console.log('{couponCode, discountPercentage, minimumPrice, endDate} :', {couponCode, discountPercentage, minimumPrice, endDate} )
-        const existingCoupen = await Coupen.findOne({coupenCode:couponCode})
-        console.log('existingCoupen:', existingCoupen)
-        if(existingCoupen){
-            return res.redirect(`/admin/coupen-page?msg=Coupen already exist.`)
-        }
+        // const existingCoupen = await Coupen.findOne({couponCode})
+        // console.log('existingCoupen:', existingCoupen)
+        // if(existingCoupen){
+        //     return res.redirect(`/admin/coupen-page?msg=Coupen already exist.`)
+        // }
 
         const coupen = new Coupen({
             couponCode:couponCode,
@@ -171,10 +173,28 @@ const removeCoupon = async (req, res) => {
     }
 }
 
+
+const getCouponList = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const coupons = await Coupen.find({});
+        
+
+
+        res.render('coupon-list', {
+            coupons,
+            userId
+        })
+    } catch (error) {
+        console.log('getCouponList:', error);
+    }
+}
+
 module.exports = {
     getCoupenPage,
     creteCoupen,
     deleteCoupen,
     applyCoupon,
-    removeCoupon
+    removeCoupon,
+    getCouponList
 }

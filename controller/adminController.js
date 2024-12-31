@@ -29,7 +29,7 @@ const loadSignin = async (req, res) => {
         res.status(404).send('Page not Found');
     }
 }
-// Backend Controller Functions
+
 
 const loadDasheBoard = async (req, res) => {
     try {
@@ -77,7 +77,7 @@ async function getTotalSales() {
         const currentYear = new Date().getFullYear();
         const startOfYear = new Date(currentYear, 0, 1);
 
-        // Weekly Sales
+        
         const weeklySales = await Order.aggregate([
             {
                 $match: {
@@ -94,7 +94,7 @@ async function getTotalSales() {
             { $sort: { "_id": 1 } }
         ]);
 
-        // Monthly Sales
+      
         const monthlySales = await Order.aggregate([
             {
                 $match: {
@@ -111,7 +111,7 @@ async function getTotalSales() {
             { $sort: { "_id": 1 } }
         ]);
 
-        // Yearly Sales
+        
         const yearlySales = await Order.aggregate([
             {
                 $match: {
@@ -128,10 +128,10 @@ async function getTotalSales() {
             { $limit: 5 }
         ]);
 
-        // Format data for charts
+   
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         
-        // Process weekly data
+       
         const weeklyData = {
             labels: Array.from({ length: 52 }, (_, i) => `Week ${i + 1}`),
             data: Array(52).fill(0)
@@ -142,7 +142,7 @@ async function getTotalSales() {
             }
         });
 
-        // Process monthly data
+        
         const monthlyData = {
             labels: monthNames,
             data: Array(12).fill(0)
@@ -151,7 +151,7 @@ async function getTotalSales() {
             monthlyData.data[item._id - 1] = item.sales;
         });
 
-        // Process yearly data
+       
         const yearlyData = {
             labels: yearlySales.map(item => item._id.toString()),
             data: yearlySales.map(item => item.sales)
@@ -255,10 +255,10 @@ async function getMostSellingCategories() {
 async function getMostSellingBrands() {
     try {
         const result = await Order.aggregate([
-            // Unwind the products array to work with individual products
+            
             { $unwind: "$products" },
             
-            // Lookup product details
+            
             {
                 $lookup: {
                     from: "products",
@@ -269,7 +269,7 @@ async function getMostSellingBrands() {
             },
             { $unwind: "$productDetails" },
 
-            // Group by brand and calculate total quantity sold
+            
             {
                 $group: {
                     _id: "$productDetails.brand",
@@ -278,20 +278,20 @@ async function getMostSellingBrands() {
                 }
             },
 
-            // Filter out null or empty brand names
+           
             {
                 $match: {
                     "_id": { $ne: null, $ne: "" }
                 }
             },
 
-            // Sort by quantity sold in descending order
+          
             { $sort: { totalQuantitySold: -1 } },
 
-            // Limit to top 10 brands
+           
             { $limit: 10 },
 
-            // Project final format
+           
             {
                 $project: {
                     _id: 1,
