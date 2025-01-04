@@ -26,6 +26,11 @@ const walletSchema = new Schema({
             type: Number,
             default: 0
         },
+        paymentStatus:{
+            type: String,
+            enum: ['Success', 'Failed', 'Refund'],
+            required: false
+        },
         orderId:{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Order',

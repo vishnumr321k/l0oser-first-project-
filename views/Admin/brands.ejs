@@ -190,19 +190,23 @@
         <div class="col-md-4">
           <form method="post" action="/admin/brands" enctype="multipart/form-data">
             <div class="mb-4">
-              <label for="product_name" class="form-label">Brand Name</label>
-              <input type="text" name="name" placeholder="Type here" class="form-control" />
+              <label for="brandName" class="form-label">Brand Name</label>
+              <input type="text"name="name" id="brandName"  placeholder="Type here"  class="form-control"  required />
             </div>
-            <label for="product_name" class="form-label">Brand Image</label>
-            <div class="input-upload">
-              <img src="" alt=""/>
-              <input class="form-control border" name="image" type="file" />
+            <div class="mb-4">
+              <label for="brandImage" class="form-label">Brand Image</label>
+              <input type="file" name="image" id="brandImage" class="form-control" required />
             </div>
             <div class="d-grid">
-              <button class="btn btn-primary mt-3" type="submit">Add Brand</button>
+              <button 
+                class="btn btn-primary mt-3" 
+                type="submit" onclick="addingBranding(event)">
+                Add Brand
+              </button>
             </div>
           </form>
         </div>
+        
 
         <div class="col-md-8">
           <div class="table-responsive">
@@ -233,16 +237,16 @@
                   </td>
                   <td>
                     <% if (!brand.isBlocked) { %>
-                    <button class="btn btn-danger">
-                      <a href="/admin/blockBrand?id=<%= brand._id %>">Block</a>
+                    <button class="btn btn-danger" onclick="confirmBlock(event, '/admin/blockBrand?id=<%= brand._id %>')">
+                      Block
                     </button>
                     <% } else { %>
-                    <button class="btn btn-success">
-                      <a href="/admin/unBlockBrand?id=<%= brand._id %>">Unblock</a>
+                    <button class="btn btn-success" onclick="confirmUnblock(event, '/admin/unBlockBrand?id=<%= brand._id %>')">
+                      Unblock
                     </button>
                     <% } %>
-                    <button class="btn btn-danger" onclick="return confirmDelete()">
-                      <a href="/admin/deleteBrand?id=<%= brand._id %>">Delete</a>
+                    <button class="btn btn-danger" onclick="confirmDelete(event, '/admin/deleteBrand?id=<%= brand._id %>')" type="submit" id="deleteBrand">
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -259,10 +263,82 @@
     <!-- Pagination logic will go here -->
   </div>
 </section>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  function confirmDelete() {
-    return confirm('Are you sure you want to delete this brand?');
+
+async function addingBranding(event){
+     event.preventDefault();
+    await Swal.fire({
+      icon
+    })
+}
+
+  async function confirmUnblock(event, url) {
+    event.preventDefault();
+    const data = await Swal.fire({
+      icon: 'warning',
+      title: 'Are you sure you want UnBlock this Brand?',    
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, UnBlock',
+      cancelButtonText: 'No, Keep It'
+    })
+
+    if(data.isConfirmed){
+      Swal.fire({
+        icon: 'success',
+        title: 'The Brand is unBlocked..'
+      }).then(() => {
+        window.location.href = url
+      })
+    }
+}
+  
+
+async function confirmBlock(event, url) {
+    event.preventDefault();
+    const data = await Swal.fire({
+      icon: 'warning',
+      title: 'Are you sure you want Block this Brand?',    
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Block',
+      cancelButtonText: 'No, Keep It'
+    })
+
+    if(data.isConfirmed){
+      Swal.fire({
+        icon: 'success',
+        title: 'The Brand is Blocked..'
+      }).then(() => {
+        window.location.href = url
+      })
+    }
+}
+
+ async function confirmDelete(event, url) {
+    event.preventDefault();
+
+    const data = await Swal.fire({
+      icon: 'warning',
+      title: 'Are you sure you want Delete this Brand?',    
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Delete',
+      cancelButtonText: 'No, Keep It'
+    })
+
+    if(data.isConfirmed){
+      Swal.fire({
+        icon: 'success',
+        title: 'The Brand is removed...'
+      }).then(() => {
+        window.location.href = url
+      })
+    }
   }
 </script>
 

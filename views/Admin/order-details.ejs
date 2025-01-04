@@ -16,7 +16,7 @@
                     <small class="text-muted">Order ID: #<%= orders.orderId %></small>
                 </div>
                 <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                    <form action="/admin/update-orderStatus" method="post" class="d-inline-block">
+                    <form action="/admin/update-orderStatus" method="post" class="d-inline-block" id="statusUpdate">
                         <input type="hidden" name="orderId" value="<%= orders._id %>">
                         <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" name="orderStatus">
                             <option>Change status</option>
@@ -26,9 +26,9 @@
                             <option Deliverd value="Deliverd">Delivered</option>
                             <option value="Cancelled">Cancelled</option>
                         </select>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary"  onclick="statusUpdate(event)">Save</button>
                     </form>
-                    <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
+                    <!-- <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a> -->
                 </div>                
             </div>
         </header> <!-- card-header end// -->
@@ -60,7 +60,7 @@
                             <p class="mb-1">
                                 Shipping: Fargo express <br> Pay method: card <br> Status: new
                             </p>
-                            <a href="#">Download info</a>
+                            <!-- <a href="#">Download info</a> -->
                         </div>
                     </article>
                 </div> <!-- col// -->
@@ -74,7 +74,7 @@
                             <p class="mb-1">
                                 City: <%= orders.address.city %>, <%= orders.address.state %> <br><%= orders.address.streetAddress %> <br> Pin:-<%= orders.address.pincode %>
                             </p>
-                            <a href="#">View profile</a>
+                            <!-- <a href="#">View profile</a> -->
                         </div>
                     </article>
                 </div> <!-- col// -->
@@ -150,7 +150,7 @@
                             </tbody>
                         </table>
                     </div> <!-- table-responsive// -->
-                    <a class="btn btn-primary" href="page-orders-tracking.html">View Order Tracking</a>
+                    <!-- <a class="btn btn-primary" href="page-orders-tracking.html">View Order Tracking</a> -->
                 </div> <!-- col// -->
                 <div class="col-lg-1"></div>
                 <div class="col-lg-4">
@@ -174,4 +174,30 @@
         </div> <!-- card-body end// -->
     </div> <!-- card end// -->
 </section> <!-- content-main end// -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function statusUpdate(event){
+         event.preventDefault();
+ 
+      const data = await Swal.fire({
+             icon: 'warning',
+             title: 'Are you sure you want to Change the Status?',    
+             showCancelButton: true,
+             confirmButtonColor: '#3085d6',
+             cancelButtonColor: '#d33',
+             confirmButtonText: 'Are you Sure',
+             cancelButtonText: 'No, Keep It'
+         })
+ 
+         if(data.isConfirmed){
+             Swal.fire({
+                 icon:"success",
+                 title: 'The Status Update Successfull...',
+                 confirmButton: 'ok'
+             }).then(() => {
+                 document.getElementById('statusUpdate').submit()
+             })
+         }
+     }
+ </script>
 <%- include('../partials/admin/footer') %>

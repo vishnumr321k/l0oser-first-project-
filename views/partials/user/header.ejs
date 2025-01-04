@@ -27,7 +27,104 @@
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="img/zero.png">
     <link rel="apple-touch-icon-precomposed" href='img/zero.png'>
-
+<style>/* Mobile Header Styles */
+    @media screen and (max-width: 768px) {
+        /* Header list categories adjustment */
+        .header-list-categories {
+            display: none;
+        }
+    
+        /* Logo adjustment */
+        .logo-header {
+            text-align: center;
+        }
+    
+        .logo-header img {
+            max-width: 120px;
+            height: auto;
+        }
+    
+        /* Nav icons container */
+        .nav-icon {
+            position: relative;
+            padding: 10px 0;
+        }
+    
+        /* Cart and wishlist icons */
+        .nav-icon-item {
+            font-size: 20px;
+            padding: 5px;
+        }
+    
+        .count-box {
+            font-size: 10px;
+            min-width: 16px;
+            height: 16px;
+            line-height: 16px;
+            right: -5px;
+            top: -5px;
+        }
+    
+        /* Navigation layout */
+        .wrapper-header {
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+    
+        /* Adjust columns for better mobile layout */
+        .col-md-4.col-3 {
+            flex: 0 0 20%;
+        }
+    
+        .col-md-4.col-6 {
+            flex: 0 0 60%;
+        }
+    
+        /* Hide unnecessary elements on mobile */
+        .tf-md-hidden {
+            display: none;
+        }
+    
+        /* Show mobile menu button */
+        .tf-lg-hidden {
+            display: block;
+        }
+    
+        /* Gap adjustments */
+        .gap-20 {
+            gap: 10px !important;
+        }
+    
+        /* Ensure proper alignment of all header elements */
+        .align-items-center {
+            align-items: center !important;
+        }
+    }
+    
+    /* Small mobile devices */
+    @media screen and (max-width: 480px) {
+        /* Hide login buttons and user info on phone size */
+        .login-buttons,
+        .user-info {
+            display: none !important;
+        }
+    
+        /* Adjust spacing now that some elements are hidden */
+        .nav-icon {
+            gap: 15px !important;
+            justify-content: flex-end;
+        }
+    
+        .nav-icon-item {
+            font-size: 18px;
+        }
+    
+        /* Ensure proper spacing after hiding elements */
+        .wrapper-header {
+            padding: 8px 0;
+        }
+    }</style>
 </head>
 
 <body class="preload-wrapper">
@@ -132,11 +229,11 @@
                                             <input class="logout_home" type="submit" value="Logout">
                                         </form>
                                     </div>
-                                    <li class="nav-search">
+                                    <!-- <li class="nav-search">
                                         <a href="#canvasSearch" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" class="nav-icon-item">
                                             <i class="icon icon-search"></i>
                                         </a>
-                                    </li>
+                                    </li> -->
                                    
                                     <li class="nav-account">
                                         <a href="/profile" class="nav-icon-item">

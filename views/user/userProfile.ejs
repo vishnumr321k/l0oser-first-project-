@@ -14,7 +14,22 @@
     cursor: pointer;
     transition: all 0.3s ease;
 }
+#updatePasswordBtn{
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
+#updatePasswordBtn:hover{
+    background-color: white;
+    color: black;
+    border-color: black;
+}
 #updateProfileBtn:hover {
     background-color: white;
     color: black;
@@ -261,11 +276,11 @@
                                             <i class="fi-rs-shopping-bag mr-10"></i>Orders
                                         </a>
                                     </li>
-                                    <li class="nav-item">
+                                    <!-- <li class="nav-item">
                                         <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false">
                                             <i class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order
                                         </a>
-                                    </li>
+                                    </li> -->
                                     <li class="nav-item">
                                         <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true">
                                             <i class="fi-rs-marker mr-10"></i>My Address
@@ -480,18 +495,21 @@
                                                     <div class="form-group col-md-12">
                                                         <label>Current Password<span class="required">*</span></label>
                                                         <input  id="currentPassword" required="" class="form-control square" name="currentPassword" type="password"  placeholder="Enter your current password...">
+                                                        <span id="currentPasswordErr" class="text-danger"></span>
                                                     </div>
                                                     <div class="form-group col-md-12">
                                                         <label>New Password<span class="required">*</span></label>
                                                         <input id="newPassword" required="" class="form-control square" name="email" type="password"  placeholder="Enter New Password...">
+                                                        <span id="newPasswordErr" class="text-danger"></span>
                                                     </div>
                                                     <div class="form-group col-md-12">
                                                         <label>Confirm Password<span class="required">*</span></label>
                                                         <input  id="confirmPassword" required="" class="form-control square" name="confirmPassword" type="password"  placeholder="Re-enter to Confirm Password...">
+                                                        <span id="confirmPasswordErr" class="text-danger"></span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <button type="button" class="btn-small" id="updateProfileBtn" onclick="updatePassword()">Update Password</button>
+                                                    <button type="button" class="btn-small" id="updatePasswordBtn" onclick="updatePassword()">Update Password</button>
                                                 </div>
                                                 
                                             </form>
@@ -525,7 +543,14 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
+    function clearMessage(){
+        document.getElementById('currentPasswordErr').innerHTML = '';
+        document.getElementById('newPasswordErr').innerHTML = '';
+        document.getElementById('confirmPasswordErr').innerHTML = '';
+    }
+
     async function updateproFile(){
+       
         const form = document.getElementById('updateProfileForm');
         const formData = new FormData(form);
         const data = {
@@ -627,66 +652,77 @@
     });
 }
 
-function updatePassword(){
+function updatePassword() {
+    clearMessage();
+
     const currentPassword = document.getElementById('currentPassword').value;
     const newPassword = document.getElementById('newPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
 
-    if(!currentPassword || !newPassword|| !confirmPassword){
-        Swal.fire({
-            icon: 'error',
-            title: 'All fields are required...',
-        });
+    let isValid = true;
+
+    if (!currentPassword) {
+        document.getElementById('currentPasswordErr').innerText = 'Current Password is required.';
+        isValid = false;
+    }
+
+    if (!newPassword) {
+        document.getElementById('newPasswordErr').innerText = 'New Password is missing.';
+        isValid = false;
+    }
+
+    if (!confirmPassword) {
+        document.getElementById('confirmPasswordErr').innerText = 'Confirm Password is missing.';
+        isValid = false;
+    }
+
+    if (newPassword !== confirmPassword) {
+        document.getElementById('newPasswordErr').innerText = 'Passwords do not match.';
+        isValid = false;
+    }
+
+    if (!isValid) {
         return;
     }
-    
 
-    if(newPassword !== confirmPassword){
-        Swal.fire({
-            icon: 'error',
-            title: 'Password  not match...🤨',
-            text: 'You enterd password and new password is not match...'
-        })
-        return
-    }
+    const data = {
+        currentPassword: currentPassword,
+        newPassword: newPassword
+    };
 
     fetch('/update-password-profile', {
         method: 'POST',
-        headers:{
-            'Content-Type' : 'application/json'
+        headers: {
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            currentPassword,
-            newPassword
-        })
+        body: JSON.stringify(data)
     })
-    .then((response) => response.json())
-    .then((data) => {
-       if(!data.success){
-        Swal.fire({
-            icon:'error',
-            title: 'Error occurred'
+        .then((response) => response.json())
+        .then((data) => {
+            if (!data.success) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error occurred',
+                    text: data.message || 'An unknown error occurred.'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Password updated successfully!',
+                    showConfirmButton: false,
+                });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
         })
-       }else{
-        Swal.fire({
-            icon: 'success',
-            title: 'Password updated Successfully...🤩',
-            showConfirmButton: false,
-        })
-        setTimeout(() => {
-            window.location.reload()
-        },1000)
-       
-       }
-
-    })
-    .catch((error) => {
-        console.log('updatePassword FrontEnd:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Somthing went Wrong...'
+        .catch((error) => {
+            console.log('updatePassword FrontEnd:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Something went wrong.'
+            });
         });
-    })
 }
 
 </script>

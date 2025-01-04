@@ -78,8 +78,8 @@ router.get('/sales-report', adminAuth.adminAuth,salesReportController.getSaleRep
 router.get('/sales-report-pdf', adminAuth.adminAuth, salesReportController.generateSalesPDF);
 router.get('/sales-report-exel', adminAuth.adminAuth, salesReportController.generateSalesExel);
 
-// dash
-
+// addproduct Take Risk
+router.get('/add-product-admin', productController.addProductAdmin)
 
 router.use((req,res)=>{
     res.redirect("/admin")

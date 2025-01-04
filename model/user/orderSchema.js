@@ -17,6 +17,11 @@ const orderSchema = new Schema({
         require: false,
         default: 0,
     },
+    discountPercentage:{
+        type: Number,
+        require: false,
+        default: 0,
+    },
     products: [
         {
             productId: {
@@ -50,7 +55,7 @@ const orderSchema = new Schema({
     },
     paymentMethord:{
         type: String,
-        enum:["COD", "Online"],
+        enum:["COD", "Online", 'wallet'],
         required: true,
     },
     paymentStatus:{

@@ -736,13 +736,16 @@
     <div class="mb-canvas-content">
         <div class="mb-body">
             <ul class="nav-ul-mb" id="wrapper-menu-navigation">
-                <li class="nav-mb-item">
-                    <a href="#dropdown-menu-one" class="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-one">
+                 <li class="nav-mb-item">
+                    <a href="/home" class="mb-menu-link">Home</a>
+                </li>
+                <!-- <li class="nav-mb-item">
+                    <a href="/home" class="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-one">
                         <span>Home</span>
                         <span class="btn-open-sub"></span>
-                    </a>
-                    <div id="dropdown-menu-one" class="collapse">
-                        <ul class="sub-nav-menu" >
+                    </a> -->
+                    <!-- <div id="dropdown-menu-one" class="collapse"> -->
+                        <!-- <ul class="sub-nav-menu" >
                             <li><a href="index.html" class="sub-nav-link">Home Fashion 01</a></li>
                             <li><a href="home-02.html" class="sub-nav-link">Home Fashion 02</a></li>
                             <li><a href="home-03.html" class="sub-nav-link">Home Fashion 03</a></li>
@@ -779,12 +782,12 @@
                             <li><a href="home-accessories.html" class="sub-nav-link">Home Accessories</a></li>
                             <li><a href="home-grocery.html" class="sub-nav-link">Home Grocery</a></li>
                             <li><a href="home-baby.html" class="sub-nav-link">Home Baby</a></li>
-                        </ul>
-                    </div>
+                        </ul> -->
+                    <!-- </div> -->
                     
-                </li>
-                <li class="nav-mb-item">
-                    <a href="#dropdown-menu-two" class="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-two">
+                <!-- </li> -->
+                <!-- <li class="nav-mb-item">
+                    <a href="" class="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-two">
                         <span>Shop</span>
                         <span class="btn-open-sub"></span>
                     </a>
@@ -840,13 +843,16 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> -->
                 <li class="nav-mb-item">
-                    <a href="#dropdown-menu-three" class="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-three">
+                    <a href="/product-list" class="mb-menu-link">Products</a>
+                </li>
+                <!-- <li class="nav-mb-item">
+                    <a href="/product-list" class="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-three">
                         <span>Products</span>
                         <span class="btn-open-sub"></span>
-                    </a>
-                    <div id="dropdown-menu-three" class="collapse">
+                    </a> -->
+                    <!-- <div id="dropdown-menu-three" class="collapse">
                         <ul class="sub-nav-menu" id="sub-menu-navigation">
                             <li>
                                 <a href="#sub-product-one" class="sub-nav-link collapsed"  data-bs-toggle="collapse" aria-expanded="true" aria-controls="sub-product-one">
@@ -925,9 +931,9 @@
                                 </div>
                             </li>
                         </ul>
-                    </div>
-                </li>
-                <li class="nav-mb-item">
+                    </div> -->
+                <!-- </li> -->
+                <!-- <li class="nav-mb-item">
                     <a href="#dropdown-menu-four" class="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-four">
                         <span>Pages</span>
                         <span class="btn-open-sub"></span>
@@ -968,8 +974,8 @@
                         </ul>
                     </div>
                     
-                </li>
-                <li class="nav-mb-item">
+                </li> -->
+                <!-- <li class="nav-mb-item">
                     <a href="#dropdown-menu-five" class="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-five">
                         <span>Blog</span>
                         <span class="btn-open-sub"></span>
@@ -984,44 +990,48 @@
                         </ul>
                     </div>
                     
-                </li>
+                </li> -->
                 <li class="nav-mb-item">
-                    <a href="https://themeforest.net/item/ecomus-ultimate-html5-template/53417990?s_rank=3" class="mb-menu-link">Buy now</a>
+                    <a href="/user-cart" class="mb-menu-link">Buy now</a>
                 </li>
             </ul>
             <div class="mb-other-content">
                 <div class="d-flex group-icon">
                     <a href="wishlist.html" class="site-nav-icon"><i class="icon icon-heart"></i>Wishlist</a>
-                    <a href="home-search.html" class="site-nav-icon"><i class="icon icon-search"></i>Search</a>
+                    <!-- <a href="home-search.html" class="site-nav-icon"><i class="icon icon-search"></i>Search</a> -->
                 </div>
-                <div class="mb-notice">
+                <!-- <div class="mb-notice">
                     <a href="contact-1.html" class="text-need">Need help ?</a>
-                </div>
-                <ul class="mb-info">
+                </div> -->
+                <!-- <ul class="mb-info">
                     <li>Address: 1234 Fashion Street, Suite 567, <br> New York, NY 10001</li>
                     <li>Email: <b>info@fashionshop.com</b></li>
                     <li>Phone: <b>(212) 555-1234</b></li>
-                </ul>
+                </ul> -->
             </div>
         </div>
         <div class="mb-bottom">
-            <a href="/home" class="site-nav-icon"><i class="icon icon-account"></i>Login</a>
+            <%if(users || google){%>
+            <a href="/logout" class="site-nav-icon"><i class="icon icon-account"></i>LogOut</a>
+            <%}else{%>
+                <a href="/login" class="site-nav-icon"><i class="icon icon-account"></i>Login</a>
+                <%}%>
             <div class="bottom-bar-language">
                 <div class="tf-currencies">
-                    <select class="image-select center style-default type-currencies">
+                    <!-- <select class="image-select center style-default type-currencies">
                         <option data-thumbnail="images/country/fr.svg">EUR <span>€ | France</span></option>
                         <option data-thumbnail="images/country/de.svg">EUR <span>€ | Germany</span></option>
                         <option selected data-thumbnail="images/country/us.svg">USD <span>$ | United States</span></option>
                         <option data-thumbnail="images/country/vn.svg">VND <span>₫ | Vietnam</span></option>
-                    </select>
+                    </select> -->
                 </div>
                 <div class="tf-languages">
-                    <select class="image-select center style-default type-languages">
+                    <!-- <select class="image-select center style-default type-languages">
                         <option>English</option>
                         <option>العربية</option>
                         <option>简体中文</option>
                         <option>اردو</option>
-                    </select>
+                    </select> -->
                 </div>
             </div>
         </div>

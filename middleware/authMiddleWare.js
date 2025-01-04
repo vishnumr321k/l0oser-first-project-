@@ -56,9 +56,33 @@ const adminAuth = async (req, res, next) => {
             res.redirect("/admin/signin")
         }
 }
+const checkIsBlock = async (req, res, next) => {
+    try {
+        const userId = req.session.userId;
+        if (!userId) {
+            return res.redirect('/login');
+        }
+
+        const user = await User.findById(userId);
+        if (user && user.isBlocked) {
+            req.session.destroy(); // Clear the session
+            return res.status(403).render('login', {
+                error: 'Your account has been blocked. Please contact support.',
+                passErr: ''
+            });
+        }
+
+        next(); // Proceed to the next middleware or route handler
+    } catch (error) {
+        console.error('Error checking if user is blocked:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 
 module.exports = {
     userAuth,
     adminAuth,
-    userBlock
+    userBlock,
+    checkIsBlock
 }

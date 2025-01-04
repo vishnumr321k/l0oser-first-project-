@@ -30,22 +30,22 @@ const sendOtp = async (email, otp) => {
     }
 };
 
-
 const loadLogin = async (req, res) => {
     try {
         const user = req.session.userId;
-        
+        const passErr = req.query.passErr || ''; 
+
         if (user) {
             res.redirect('/home');
         } else {
-            console.log('The Loading page is loaded...🕺');
-            res.render('login', { error: null });
+            console.log('The login page is loaded...🕺');
+            res.render('login', { error: null, passErr });
         }
     } catch (error) {
         console.log('The login page is not loaded...😒', error);
-        res.status(404).send('page not Found...');
+        res.status(404).send('Page not found...');
     }
-}
+};
 
 
 const loadSignup = async (req, res) => {
@@ -60,50 +60,58 @@ const loadSignup = async (req, res) => {
 
 const loadHomepage = async (req, res) => {
     try {
-        const user = req.session.userId;
+        const userId = req.session.userId;
         const google = req.session.googleId;
 
-        console.log("hello121")
-        console.log("the user", user)
-        console.log("the Googleid", google)
-       
+        if (userId) {
+            const user = await User.findById(userId);
+            if (user.isBlocked) {
+                req.session.destroy(); // Clear the session
+                return res.redirect('/login?passErr=Your account has been blocked.');
+            }
+        }
+
+        if (google) {
+            const googleUser = await User.findOne({ googleId: google });
+            if (googleUser.isBlocked) {
+                req.session.destroy(); // Clear the session
+                return res.redirect('/login?passErr=Your account has been blocked.');
+            }
+        }
+
+        // Regular homepage logic
         const categories = await Category.find({});
-        let productData = await Product.find({
+        const productData = await Product.find({
             isBlocked: false,
-            category: { $in: categories.map(category => category._id) },
+            category: { $in: categories.map(category => category._id) }
         });
-       
+
         let userData = null;
         let googleData = null;
 
-        if (user) {
-            console.log('Regular User logged in...');
-            userData = await User.findById(user);
+        if (userId) {
+            userData = await User.findById(userId);
         } else if (google) {
-            console.log('Google user logged in...');
             googleData = await User.findOne({ googleId: google });
         }
 
         let productCount = 0;
-
-        const cart = await Cart.findOne({ userId: user });
+        const cart = await Cart.findOne({ userId });
         if (cart) {
-            productCount = cart.products.length; 
-        } else {
-            console.log('Cart is empty...');
+            productCount = cart.products.length;
         }
+
         res.render('home', {
             users: userData,
             products: productData,
             google: googleData,
-            productCount: productCount
-
-        })
+            productCount
+        });
     } catch (error) {
-        console.log('An Error is shown', error);
-        res.status(404).send('page not found...😶‍🌫️')
+        console.log('Error loading homepage:', error);
+        res.status(404).send('Page not found...😶‍🌫️');
     }
-}
+};
 
 const userSignup = async (req, res) => {
     const { name, email, password, cpassword, mobile } = req.body;
@@ -206,39 +214,48 @@ const resendOtp = async (req, res) => {
 
 }
 
-
-
 const userLogin = async (req, res) => {
     const { email, password } = req.body;
-    try {
 
+    try {
         if (!email || !password) {
-            console.log('All fields are required...');
-            return res.status(400).render('login', { error: 'All fields are required' });
+            return res.status(400).render('login', {
+                error: 'All fields are required',
+                passErr: ''
+            });
         }
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(401).render('login', { error: 'INvalid email or password' });
+            return res.status(401).render('login', {
+                error: null,
+                passErr: 'Invalid email or password'
+            });
         }
 
-        const is_passwordMatch = await bcrypt.compare(password, user.password);
-        console.log('is_passwordMatch:', is_passwordMatch)
-        if (!is_passwordMatch) {
-            return res.status(401).render('login', {passwordError: 'INvalid email or password'});
+        if (user.isBlocked) {
+            return res.status(403).render('login', {
+                error: 'Your account has been blocked. Please contact support.',
+                passErr: ''
+            });
+        }
+
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        if (!isPasswordMatch) {
+            return res.status(401).redirect(`/login?passErr=Invalid email or password`);
         }
 
         req.session.userId = user._id;
-        console.log(req.session.userId)
-        
-            return res.status(200).redirect('/home');
-        
-     
+        return res.status(200).redirect('/home');
     } catch (error) {
-        console.log('Login Error', error);
-        return res.status(500).render('login', { error: 'An unexpected error occurred' });
+        console.error('Login Error:', error);
+        return res.status(500).render('login', {
+            error: 'An unexpected error occurred',
+            passErr: ''
+        });
     }
-}
+};
+
 
 const userLogout = async (req, res) => {
     try {

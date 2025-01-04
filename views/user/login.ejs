@@ -197,6 +197,12 @@
         </div>
         <div class="login-container">
             <h1>Login</h1>
+            <% if (passErr) { %>
+               <span style='align-items: center;text-align: center;'> <h6 class="" style="color: red;"><%= passErr %></h6></span>
+            <% } %>
+            <% if (error) { %>
+                <span style='align-items: center;text-align: center;'> <h6 class="" style="color: red;"><%= error %></h6></span>
+             <% } %>
             <form id="loginForm" method="post" action="/login" onsubmit="return validateForm();">
                 <div class="input-container">
                     <label for="email">Email Address</label>
@@ -209,6 +215,7 @@
                     <input type="password" id="password" name="password">
                     <p class="error-message" id="passwordError" style="color: red;"></p>
                 </div>
+                
 
                 <button type="submit" class="login-btn">Login</button>
                 <p id="formError" class="error-message" style="color: red;"></p>

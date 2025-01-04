@@ -7,7 +7,7 @@ const adminRouter = require('./routes/adminRoute');
 const userRouter = require('./routes/userRouter');
 const connectDb = require('./config/dataBase');
 const passport = require('./config/passport');
-
+const flash = require('connect-flash')
 
 const env = require('dotenv');
 const { fetchCartProductCount , wishlistAddProductCount} = require('./middleware/countCartProduct');
@@ -16,6 +16,7 @@ env.config();
 connectDb()
 app.use(nocache());
 app.use(express.json());
+
 app.use(express.urlencoded({ extended:true }));
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -30,10 +31,12 @@ app.use(session({
 
 
 
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use( '/uploads',express.static(path.join(__dirname, 'public/uploads')));
 app.use(fetchCartProductCount)
 app.use(wishlistAddProductCount)
+app.use(flash());
 
 app.set('view engine', 'ejs');
 app.set("views", [

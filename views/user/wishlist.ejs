@@ -224,6 +224,9 @@
                                                         <% } %>
                                             </td>
                                             <td class="text-right" data-title="Cart">
+                                                <%if(product.productId.quantity === 0){%>
+                                                    <span class="color3 font-weight-bold" style="color: red;">NO Action</span>
+                                                    <%}else{%>
                                                 <% if(cartProductIds.includes(product.productId._id.toString())) { %>
                                                     <a href="/user-cart" class="btn btn-sm"><i
                                                             class="fi-rs-shopping-bag mr-5"></i>View Cart</a>
@@ -239,6 +242,7 @@
                                                                 cart</button>
                                                         </form>
                                                         <% } %>
+                                                        <%}%>
                                             </td>
                                             <td class="action" data-title="Remove">
                                                 <a

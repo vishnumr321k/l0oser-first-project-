@@ -16,6 +16,7 @@ const wishListController = require('../controller/wishListController');
 
 
 
+
 router.use((req, res, next) =>{
     res.locals.user = req.session.userId || null;
     res.locals.userData = req.session.userData || null;
@@ -113,6 +114,7 @@ router.post('/retry-payment', paymetnController.retryPayment)
 
 
 
+
 // coupen
 router.get('/coupon-list', coupencontroller.getCouponList)
 router.post('/apply-coupom', coupencontroller.applyCoupon)
@@ -127,7 +129,9 @@ router.post('/remove-product-in-wishlist', wishListController.removeProductInWis
 
 // Wallet
 router.get('/user-wallet', productController.getWalletPage);
-
+router.post('/add-money-wallet', paymetnController.addMoneyWallet);
+router.post('/wallet-verify-Payment', paymetnController.walletVerifyPayment)
+router.post('/wallet-faile-payment', paymetnController.failePayment)
 
 
 

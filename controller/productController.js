@@ -34,73 +34,70 @@ const getProductAddPage = async (req, res) => {
 
 const addProducts = async (req, res) => {
     try {
-      const products = req.body;
-      const productExists = await Product.findOne({
-        productName: products.productName,
-      });
-  
-      if (!productExists) {
-        const images = [];
-        const allowedImages = ["jpeg", "jpg", "png"];
-       
-        if (req.files && req.files.length > 0) {
-          for (let i = 0; i < req.files.length; i++) {
-            const fileExtension = path.extname(req.files[i].originalname) 
-              .toLowerCase()
-              .replace(".", "");
-  
-            if (!allowedImages.includes(fileExtension)) {
-              return res
-                .status(409)
-                .json(`Unsupported image format: ${req.files[i].originalname}`);
-            }
-  
-          
-            const originalImagePath = req.files[i].path;
-            const resizedImagePath = path.join("public", "uploads", "product-images", req.files[i].filename);
-  
-            await sharp(originalImagePath)
-              .resize({ width: 440, height: 440 })
-              .toFile(resizedImagePath);
-  
-            images.push(req.files[i].filename);
-          }
-        }
-  
-        const categoryId = await Category.findOne({ name: products.category });
-  
-        if (!categoryId) {
-          return res.status(400).json("Invalid category name");
-        }
-  
-        const newProduct = new Product({
-          productName: products.productName,
-          description: products.description,
-          brand: products.brand,
-          category: categoryId._id,
-          regularPrice: products.regularPrice,
-          salePrice: products.salePrice,
-          createdAt: new Date(),
-          quantity: products.quantity,
-          size: products.size,
-          color: products.color,
-          productImage: images,
-          status: "Available",
+        const products = req.body;
+        
+        const productExists = await Product.findOne({
+            productName: products.productName
         });
-  
+
+        if (productExists) {
+            return res.status(409).json({
+                error: "Product already exists"
+            });
+        }
+
+        const images = [];
+        if (!req.files || req.files.length < 3) {
+            return res.status(400).json({
+                error: "Minimum 3 images required"
+            });
+        }
+
+        for (const file of req.files) {
+            const fileExt = path.extname(file.originalname).toLowerCase().replace(".", "");
+            if (!["jpeg", "jpg", "png"].includes(fileExt)) {
+                return res.status(400).json({
+                    error: `Invalid image format: ${file.originalname}`
+                });
+            }
+
+            const resizedPath = path.join("public", "uploads", "product-images", file.filename);
+            await sharp(file.path)
+                .resize(440, 440, {
+                    fit: 'cover',
+                    position: 'center'
+                })
+                .toFile(resizedPath);
+
+            images.push(file.filename);
+        }
+
+        const category = await Category.findOne({ name: products.category });
+        if (!category) {
+            return res.status(400).json({ error: "Invalid category" });
+        }
+
+        const newProduct = new Product({
+            productName: products.productName,
+            description: products.description,
+            brand: products.brand,
+            category: category._id,
+            regularPrice: parseFloat(products.regularPrice),
+            salePrice: products.salePrice ? parseFloat(products.salePrice) : undefined,
+            quantity: parseInt(products.quantity),
+            color: [products.color],
+            productImage: images,
+            status: parseInt(products.quantity) > 0 ? "Available" : "Out of stock"
+        });
+
         await newProduct.save();
-        return res.redirect("/admin/addproduct");
-      } else {
-        return res
-          .status(400)
-          .json("Product already exists, please try with another name");
-      }
+        res.redirect("/admin/addproduct");
+
     } catch (error) {
-      console.error("Error adding product", error);
-      res.status(500).send("Internal Server Error");
+        console.error("Error adding product:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-  };
-  
+};
 
 const getAllProducts = async (req, res) =>{
     try {
@@ -114,6 +111,7 @@ const getAllProducts = async (req, res) =>{
                 {brand:{$regex:new RegExp('.*'+ search +'.*','i')}}
             ], 
         }) .populate('category')
+        .sort({  updatedAt: -1 }) 
         .limit(limit)
         .skip((page - 1) * limit)
         .exec();
@@ -262,7 +260,8 @@ const editProduct = async (req,res) => {
             regularPrice:data.regularPrice,
             salePrice:data.salePrice,
             quantity:data.quantity,
-            color:data.color
+            color:data.color,
+            updatedAt: new Date(),
         }
 
         if(req.files.length>0){
@@ -366,14 +365,17 @@ const getChekout = async (req, res) => {
         });
 
         const products = await Product.find({ _id: { $in: cartProduct.products.map(product => product.productId) } });
+        const wallet = await Wallet.findOne({userId});
 
+        const walletBalance = wallet.balance;
         res.render('checkOutPage', {
             userId: user,
             cartProduct: cartProduct,
             products: products,
             subtotal: subtotal,
             productCount:productCount,
-            total
+            total,
+            walletBalance
         })
 
         req.session.subtotal = subtotal;
@@ -392,8 +394,10 @@ const placeOrder = async (req, res) => {
         const subtotal = req.session.newSubtotal || req.body.subtotal;
         const discount = req.session.discount;
         const coupenCode = req.session.coupenCode
-     
+        const wallet = await Wallet.findOne({userId})
         const user = await User.findOne({_id:userId});
+        const walletMoney = wallet.balance;
+
         
         const selectAddress = user.addresses[theAddress];
 
@@ -405,6 +409,7 @@ const placeOrder = async (req, res) => {
         const productCount = cartProduct.products.length;
         
         
+    if(selectedPaymentMethod === 'COD'){
 
         const orders = new Order(
             {
@@ -432,7 +437,49 @@ const placeOrder = async (req, res) => {
             }
 
         )
+
+        
+
         await orders.save();
+        res.render('orderSuccess', {orderId : orders._id , productCount:productCount})
+    }else if(selectedPaymentMethod === 'wallet'){
+        const orders = new Order(
+            {
+                userId: userId,
+                orderId: orderId.generate() ,
+                products:cartProduct.products.map(product => ({
+                        productId:product.productId,
+                        quantity: product.quantity,
+                        price: product.totalPrice
+                })),
+                totalAmount: subtotal,
+                paymentMethord: 'wallet',
+                discount:discount,
+                address:{
+                    addressType: selectAddress.addressType,
+                    name: selectAddress.name,
+                    streetAddress: selectAddress.streetAddress,
+                    city: selectAddress.city,
+                    state: selectAddress.state,
+                    pincode: selectAddress.pincode,
+                    mobile: selectAddress.mobile,
+                    altmobile: selectAddress.altMobile,
+                },
+                coupenCode: coupenCode,
+            }
+
+        )
+        
+        wallet.balance = Math.abs(walletMoney - subtotal);
+        wallet.transactions.push({
+            whichTransaction: 'Debit',
+            transactionAmount: subtotal,
+            paymentStatus: 'Success'
+        })
+        await wallet.save();
+        await orders.save();
+        res.render('orderSuccess', {orderId : orders._id , productCount:productCount})
+    }
         const updateProductQuantity = cartProduct.products.map(async (product) => {
             const theProduct = await Product.findById(product.productId);
             if(theProduct){
@@ -450,7 +497,7 @@ const placeOrder = async (req, res) => {
         const removeproductInCart = await Cart.findByIdAndDelete(cartProduct);
 
         console.log('The order Data enter Successfully...');
-        res.render('orderSuccess', {orderId : orders._id , productCount:productCount})
+        
     } catch (error) {
         console.log('Place order..', error);
     }
@@ -483,6 +530,7 @@ const orderDetails = async (req, res) =>{
                 orderDate:order.orderDate,
                 couponDiscount:order.discount,
                 paymentStatus: order.paymentStatus,
+                discountPercentage: order.discountPercentage,
                 order_id: order._id
                 
             }
@@ -562,6 +610,7 @@ const orderCancellation = async (req, res) =>{
         }else{
             wallet.balance += order.totalAmount;
         wallet.transactions.push({
+            paymentStatus: 'Refund',
                 whichTransaction: 'Creadit',
                 orderId: order._id,
                 transactionAmount:Number(productPrice)
@@ -714,8 +763,6 @@ const retrnDeliverdOrder = async(req, res) => {
     }
 }
 
-
-
 const getWalletPage = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -762,6 +809,7 @@ const orderInvoiceDownlod = async (req, res) => {
         doc.text(`Order ID: ${order.orderId}`)
            .text(`Order Date: ${new Date(order.orderDate).toLocaleDateString()}`)
            .text(`Payment Method: ${order.paymentMethord}`)
+           .text(`Discount Percentage:- ${order.discountPercentage}%`)
            .moveDown();
 
         const customerStartY = doc.y;
@@ -837,7 +885,7 @@ const orderInvoiceDownlod = async (req, res) => {
         
         doc.font('Helvetica')
            .text(`Subtotal: Rs${order.totalAmount - 40}`, summaryX)
-           .text(`Discount: Rs${order.discount || 0}`, summaryX)
+           .text(`Discount Price: Rs${order.discount || 0}`, summaryX)
            .text(`Delivery Charge: RS40`)
            .moveDown(0.5);
         
@@ -867,6 +915,16 @@ const orderInvoiceDownlod = async (req, res) => {
     }
 };
 
+
+const addProductAdmin = async (req, res) => {
+    try {
+        console.log('The new test add product page is loaded...');
+        res.render('add-product');
+    } catch (error) {
+        console.log('addProductAdmin:', error);
+    }
+}
+
 module.exports = {
     getProductAddPage,
     addProducts,
@@ -886,6 +944,7 @@ module.exports = {
     productList,
     retrnDeliverdOrder,
     getWalletPage,
-    orderInvoiceDownlod
+    orderInvoiceDownlod,
+    addProductAdmin
 
 }

@@ -22,11 +22,11 @@ const creteCoupen = async (req, res) => {
     try {
         const {couponCode, discountPercentage, minimumPrice, endDate} = req.body;
         console.log('{couponCode, discountPercentage, minimumPrice, endDate} :', {couponCode, discountPercentage, minimumPrice, endDate} )
-        // const existingCoupen = await Coupen.findOne({couponCode})
-        // console.log('existingCoupen:', existingCoupen)
-        // if(existingCoupen){
-        //     return res.redirect(`/admin/coupen-page?msg=Coupen already exist.`)
-        // }
+        const existingCoupen = await Coupen.findOne({couponCode})
+        console.log('existingCoupen:', existingCoupen)
+        if(existingCoupen){
+            return res.redirect(`/admin/coupen-page?msg=Coupen already exist.`)
+        }
 
         const coupen = new Coupen({
             couponCode:couponCode,
@@ -62,7 +62,6 @@ const deleteCoupen = async (req, res) => {
         console.log('deleteCoupen:', error);
     }
 }
-
 
 // const applyCoupon = async (req, res) => {
 //     try {
@@ -105,7 +104,6 @@ const deleteCoupen = async (req, res) => {
 //     }
 // }
 
-
 const applyCoupon = async (req, res) =>{
     try {
         const couponCode = req.body.couponCode;
@@ -113,6 +111,7 @@ const applyCoupon = async (req, res) =>{
         console.log('subTotal:', subtotal);
         console.log('couponCode:', couponCode)
         const coupon = await Coupen.findOne({couponCode: couponCode});
+        console.log('coupon.coupenDiscountPercentage:', coupon.coupenDiscountPercentage)
         console.log('coupon:', coupon)
         if(!coupon){
             console.log('! no coupen')
@@ -139,6 +138,7 @@ const applyCoupon = async (req, res) =>{
         console.log('discount:', discount);
         console.log('newSubtotal:', newSubtotal)
         req.session.discount = discount;
+        req.session.discountPercentage = coupon.coupenDiscountPercentage;
         req.session.newSubtotal = Math.ceil(newSubtotal);
         req.session.coupenCode = couponCode;
        
@@ -146,7 +146,8 @@ const applyCoupon = async (req, res) =>{
         res.json({
             success: true,
             discount: discount,
-            newSubtotal: newSubtotal
+            newSubtotal: newSubtotal,
+            couponDiscount: coupon.coupenDiscountPercentage
         })
     } catch (error) {
         console.log('Error applying coupen:', error);

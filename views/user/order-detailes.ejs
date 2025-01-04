@@ -188,8 +188,17 @@
             line-height: 1.5;
         }
     </style>
-    <br>
-    <br>
+    
+    <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="/home" rel="nofollow">Home</a>
+                <span></span>
+                <a href="/profile" rel="nofollow">Account</a>
+                <span></span> Order Details
+            </div>
+        </div>
+    </div>
     <div class="evt-order-container">
         <div class="evt-order-header">
             <div class="evt-order-id">OrderId:- <%= shortOrderId %>
@@ -238,6 +247,8 @@
                                         <p>Payment-Methord:- <%= paymentMethord %>
                                         </p>
                                         <p>Order Date:- <%= orderDate.toLocaleDateString() %>
+                                        </p>
+                                        <p>Discount Percentage:- <%= discountPercentage %>%
                                         </p>
                                         <p>Discount Price:- <%= couponDiscount %>
                                         </p>
@@ -300,7 +311,7 @@
                                                                                 type="submit"
                                                                                 onclick="returnConfirmation(event, '<%= orderId %>')">Return</button>
                                                                         </form>
-                                                                        <% } else { %>
+                                                                        <% } else if(status === 'Processing'  || status === 'Shipped'){ %>
                                                                             <form action="/order-cancellation"
                                                                                 method="post"
                                                                                 id="orderCancellationForm">
