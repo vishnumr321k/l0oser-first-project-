@@ -32,7 +32,7 @@ const addToCartDirectInWishList = async (req, res) => {
       const userId = req.session.userId;
       const quantity = req.body.quantity 
       const totalPrice = req.body.totalPrice;
-      console.log('quantity:', quantity);
+      // console.log('quantity:', quantity);
       if (!userId) {
         return res.redirect('/login');
       }
@@ -53,7 +53,7 @@ const addToCartDirectInWishList = async (req, res) => {
   
         if (exitingItemIndex >= 0) {
           const exitingQuantity = cart.products[exitingItemIndex].quantity;
-          console.log(cart.products[exitingItemIndex].quantity)
+          // console.log(cart.products[exitingItemIndex].quantity)
   
           if (exitingQuantity + quantity <= 5) {
             cart.products[exitingItemIndex].quantity += quantity;
@@ -88,11 +88,11 @@ const addWhishListProduct = async (req, res) => {
     try {
        const userId = req.session.userId;
        const {productId} = req.body;
-       console.log('userId:', userId);
-       console.log('productId:', productId);
+      //  console.log('userId:', userId);
+      //  console.log('productId:', productId);
 
        let wishList = await WishList.findOne({userId});
-       console.log('wislist:', wishList)
+      //  console.log('wislist:', wishList)
         
        if(!wishList ){
             wishList = new WishList({

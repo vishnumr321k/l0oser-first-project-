@@ -496,100 +496,7 @@
                 return true;
             }
 
-            // function theStartingTimeOfPayment(event) {
-            //     event.preventDefault();
-
-            //     if (!validateAddressSelection()) {
-            //         return;
-            //     }
-
-            //     const subtotal = parseInt(document.querySelector('.finaltotal').textContent.replace('₹', '').trim());
-            //     const selectPaymentMethod = document.getElementById('selectedPaymentMethod').value;
-
-            //     if (selectPaymentMethod === 'Razorpay') {
-            //         fetch('/create-razorpay-order', {
-            //             method: 'POST',
-            //             headers: { 'Content-Type': 'application/json' },
-            //             body: JSON.stringify({
-            //                 selectedAddressId: document.getElementById('selectedAddressId').value,
-            //                 subtotal,
-            //                 userId: document.getElementById('userId').value,
-            //                 cartProduct: document.getElementById('cartProduct').value
-            //             })
-            //         })
-            //         .then(response => response.json())
-            //         .then(data => {
-            //             const options = {
-            //                 key: razorpayKey,
-            //                 amount: data.amount,
-            //                 currency: data.currency,
-            //                 name: 'Your Store',
-            //                 description: 'Thank you for your purchase!',
-            //                 image: '/img/logo.png',
-            //                 order_id: data.id,
-            //                 handler: function (response) {
-            //                     fetch('/verify-Payment', {
-            //                         method: 'POST',
-            //                         headers: { 'Content-Type': 'application/json' },
-            //                         body: JSON.stringify({
-            //                             razorpayOrderId: response.razorpay_order_id,
-            //                             razorpayPaymentId: response.razorpay_payment_id,
-            //                             razorpaySignature: response.razorpay_signature,
-            //                         })
-            //                     })
-            //                     .then(res => res.json())
-            //                     .then(verificationData => {
-            //                         if (verificationData.success) {
-            //                             window.location.href = `/order-success/${verificationData.orderId}`;
-            //                         } else {
-            //                             if (isTestMode) {
-            //                                 console.error('Test Mode: Payment verification failed', verificationData);
-            //                             }
-            //                             window.location.href = `/profile`;
-            //                             Swal.fire({
-            //                                 icon: 'error',
-            //                                 title: 'Payment Failed',
-            //                                 text: 'Payment verification failed. Please try again.'
-            //                             });
-            //                         }
-            //                     })
-            //                     .catch(error => {
-            //                         console.error('Payment Verification Error:', error);
-            //                         Swal.fire({
-            //                             icon: 'error',
-            //                             title: 'Error',
-            //                             text: 'An error occurred during payment verification. Please try again.'
-            //                         });
-            //                     });
-            //                 },
-            //                 prefill: {
-            //                     name: userId.name || 'Guest',
-            //                     email: userId.email || 'guest@example.com',
-            //                     contact: userId.mobile || '1234567890',
-            //                 },
-            //                 theme: {
-            //                     color: '#000000'
-            //                 }
-            //             };
-
-            //             const razorpayPage = new Razorpay(options);
-            //             razorpayPage.open();
-            //         })
-            //         .catch(error => {
-            //             console.error('theStartingTimeOfPayment:', error);
-            //         });
-            //     } else if (selectPaymentMethod === 'COD') {
-            //         if (subtotal > 1000) {
-            //             Swal.fire({
-            //                 icon: 'error',
-            //                 title: 'COD not available',
-            //                 text: 'Cash on Delivery is not available for orders above ₹1000.'
-            //             });
-            //         } else {
-            //             document.getElementById('placeorderform').submit();
-            //         }
-            //     }
-            // }
+          
 
             function theStartingTimeOfPayment(event) {
                 event.preventDefault();
@@ -705,10 +612,18 @@
                 }
             }
 
-
+            let couponApplid = false
             function applyCoupon(event) {
                 event.preventDefault();
 
+                if(couponApplid){
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Coupon is already applide'
+                    })
+                    return
+                }
+                
                 const couponCode = document.getElementById('couponCode').value;
                 const finalTotal = parseInt(document.querySelector('.finaltotal').textContent.replace('₹', '').trim());
                 console.log('couponCode:', couponCode);
@@ -726,6 +641,7 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            couponApplid = true
                             document.querySelector('.finaltotal').textContent = `₹${data.newSubtotal}`;
                             document.querySelector('.discountPrice').textContent = `₹${data.discount}`;
                             document.querySelector('.discountPercentage').textContent = `${data.couponDiscount}%`

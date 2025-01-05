@@ -9,7 +9,7 @@ const getProductList = async (req, res) => {
     try {
         const productId = req.query.id;
         const userId = req.session.userId
-        console.log(productId);
+       
         const product = await Product.findById(productId).populate('category','name');
         const recomCat = product.category;
         const recomProducts = await Product.find({category:recomCat});

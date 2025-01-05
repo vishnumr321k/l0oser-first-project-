@@ -15,10 +15,10 @@ const createRazorpayOrder = async (req, res) => {
         const coupenCode = req.session.coupenCode;
         const discountPercentage = req.session.discountPercentage;
         // console.log('req.body:', req.body);
-        console.log('subtotal:', subtotal);
+        // console.log('subtotal:', subtotal);
 
 
-        console.log('{theData fethc body}:', { subtotal, selectedAddressId, userId })
+        // console.log('{theData fethc body}:', { subtotal, selectedAddressId, userId })
         const user = await User.findById(userId)
         const selectAddress = user.addresses[selectedAddressId]
         const cartProduct = await Cart.findOne({ userId: userId })
@@ -55,11 +55,11 @@ const createRazorpayOrder = async (req, res) => {
             },
             coupenCode: coupenCode,
         })
-        console.log('newOrder:', newOrder)
+        console.log('newOrder created...')
 
         await newOrder.save();
         req.session.orderId = newOrder._id
-        console.log('razorpaymentOrder:', razorpaymentOrder);
+        // console.log('razorpaymentOrder:', razorpaymentOrder);
         res.status(200).json(razorpaymentOrder);
 
 
@@ -107,8 +107,8 @@ const verifyPayment = async (req, res) => {
         const hashCode = crypto.createHmac('sha256', process.env.RAZORPAY_SECRET)
             .update(sign.toString())
             .digest('hex');
-        console.log(hashCode)
-        console.log(razorpaySignature)
+        // console.log(hashCode)
+        // console.log(razorpaySignature)
 
         if (hashCode === razorpaySignature) {
             const order = await Order.findById(orderingId)
@@ -155,8 +155,8 @@ const retryPayment = async (req, res) => {
         const subTotal = parseInt(req.body.subTotal)
         req.session.orderId = orderId
         const orders = await Order.findById(orderId);
-        console.log('orderId:', orderId);
-        console.log('subtotal:', typeof (subTotal));
+        // console.log('orderId:', orderId);
+        // console.log('subtotal:', typeof (subTotal));
 
 
 
@@ -171,7 +171,7 @@ const retryPayment = async (req, res) => {
 
         })
 
-        console.log('razorpaymentOrder:', razorpaymentOrder)
+        // console.log('razorpaymentOrder:', razorpaymentOrder)
 
         // orders.orderId = razorpaymentOrder.id;
         // orders.paymentStatus = 'Failure',
@@ -239,18 +239,18 @@ const walletVerifyPayment = async (req, res) => {
             .update(`${razorpayOrderId}|${razorpayPaymentId}`)
             .digest('hex');
         
-        console.log(razorpaySignature)
+        // console.log(razorpaySignature)
 
         if (hashCodeSignature === razorpaySignature) {
             
            
             const amount = req.body.amount;
-            console.log('Typeof:', typeof(amount))
-            console.log('amount:', amount)
+            // console.log('Typeof:', typeof(amount))
+            // console.log('amount:', amount)
             const wallet = await Wallet.findOne({userId});
-            console.log('userId', userId);
-            console.log('wallet:', wallet);
-            console.log('wallet.balance:', wallet.balance)
+            // console.log('userId', userId);
+            // console.log('wallet:', wallet);
+            // console.log('wallet.balance:', wallet.balance)
            
             wallet.balance += parseFloat(amount) / 100;
             wallet.transactions.push({
@@ -269,7 +269,7 @@ const walletVerifyPayment = async (req, res) => {
 
        
             const wallet = await Wallet.findOne({userId});
-            console.log('wallet:', wallet)
+            // console.log('wallet:', wallet)
             if(wallet){
             wallet.transactions.push({
                 paymentStatus: 'Failed',
@@ -296,7 +296,7 @@ const failePayment = async (req, res) => {
       const userId = req.session.userId;
         let ok  = 200;
         let pageNotFount = 404;
-        let indernalServeError = 500;
+        
       const wallet = await Wallet.findOne({userId});
       
       if(wallet){

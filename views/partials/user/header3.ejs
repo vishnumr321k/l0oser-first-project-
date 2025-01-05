@@ -15,6 +15,52 @@
     <link rel="shortcut icon" type="image/x-icon" href="/img/zero.png">
     <!-- Template CSS -->
     <link href="assets/css/main.css" rel="stylesheet" type="text/css" />
+    <style>
+        .header-wrap.header-space-between {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-left: 0 !important; /* Remove the hardcoded margin */
+}
+
+.main-menu.main-menu-padding-1.main-menu-lh-2 {
+    margin-left: 0 !important; /* Remove the hardcoded margin */
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.main-menu nav {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.main-menu nav ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem; /* Consistent spacing between items */
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .d-none.d-lg-block {
+        display: none !important;
+    }
+    
+    .header-wrap.header-space-between {
+        padding: 0 15px;
+    }
+}
+
+/* Preserve mobile menu functionality */
+@media (min-width: 992px) {
+    .d-none.d-lg-block {
+        display: block !important;
+    }
+}
+    </style>
 </head>
 
 <body>
@@ -251,32 +297,21 @@
                                 <div class="more_categories">Show more...</div>
                             </div>
                         </div> -->
-                        <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block" style="margin-left: 350px;"> 
-                            <nav>
-                                <ul>
-                                    <li><a class="active" href="/home">Home <i class=""></i></a>
-                                       
-                                    </li>
-                                    <!-- <li>
-                                        <a href="page-about.html">About</a>
-                                    </li> -->
-                                    <li><a href="/product-list">Shop<i class=""></i></a>
-                                        
-                                    </li>
-                                    <!-- <li class="position-static"><a href="#">Mega menu <i class="fi-rs-angle-down"></i></a>
-                                        
-                                    </li> -->
-                                    <!-- <li><a href="blog-category-grid.html">Blog <i class="fi-rs-angle-down"></i></a>
-                                       
-                                    </li> -->
-                                    <li><a href="/product-list">Pages <i class=""></i></a>
-                                        
-                                    </li>
-                                    <!-- <li>
-                                        <a href="page-contact.html">Contact</a>
-                                    </li> -->
-                                </ul>
-                            </nav>
+                        <div class="header-wrap header-space-between position-relative">
+                            <div class="logo logo-width-1 d-block d-lg-none">
+                                <a href="/home"><img src="img/looser.png" alt="logo"></a>
+                            </div>
+                            <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
+                                <nav>
+                                    <ul>
+                                        <li><a class="active" href="/home">Home <i class=""></i></a></li>
+                                        <li><a href="/product-list">Products<i class=""></i></a></li>
+                                        <li><a href="/contact-page">Contact<i class=""></i></a></li>
+                                        <li><a href="/product-list">Buy now<i class=""></i></a></li>
+                                        <li><a href="/about-page">About<i class=""></i></a></li>
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
                     </div>
                     <div class="hotline d-none d-lg-block">

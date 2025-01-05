@@ -61,7 +61,7 @@ const getSaleReport = async (req, res) => {
         let totalSales = orders.reduce((total, order) => total + order.totalAmount, 0);
         let totalOrder = order.length;
         const totalDiscount = orders.reduce((total, order) => total + order.discount, 0);
-        console.log('totalDiscount:', totalDiscount)
+        // console.log('totalDiscount:', totalDiscount)
 
         const result = await Order.aggregate([
             { $match: orderQuary },

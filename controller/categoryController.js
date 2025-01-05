@@ -29,7 +29,7 @@ const categoryInfo = async (req, res) =>{
 }
 
 const addCategory = async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
    
    
     try {
@@ -100,8 +100,8 @@ const addCategoryOffer = async (req, res) =>{
 const removeCategoryOffer = async(req, res) =>{
     try {
         const categoryId = req.body.categoryId;
-        console.log('dsfhdskjldksj')
-        console.log('Received data:', req.body);
+        // console.log('dsfhdskjldksj')
+        // console.log('Received data:', req.body);
         if (!categoryId) {
             return res.status(400).json({ status: false, message: "Category ID is required" });
         }

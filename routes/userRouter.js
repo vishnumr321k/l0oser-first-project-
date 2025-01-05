@@ -31,6 +31,8 @@ router.post('/verify-otp', userControler.verifyOtp);
 router.post('/login',userControler.userLogin);
 router.get('/logout', userControler.userLogout);
 router.post('/resend-otp', userControler.resendOtp);
+router.get('/about-page', userControler.aboutPage);
+router.get('/contact-page', userControler.contactDetails);
 
 
 router.get('/auth/google', passport.authenticate('google', {scope : ['profile', 'email']}));

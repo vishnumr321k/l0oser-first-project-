@@ -21,9 +21,9 @@ const getCoupenPage = async (req, res) => {
 const creteCoupen = async (req, res) => {
     try {
         const {couponCode, discountPercentage, minimumPrice, endDate} = req.body;
-        console.log('{couponCode, discountPercentage, minimumPrice, endDate} :', {couponCode, discountPercentage, minimumPrice, endDate} )
+        // console.log('{couponCode, discountPercentage, minimumPrice, endDate} :', {couponCode, discountPercentage, minimumPrice, endDate} )
         const existingCoupen = await Coupen.findOne({couponCode})
-        console.log('existingCoupen:', existingCoupen)
+        // console.log('existingCoupen:', existingCoupen)
         if(existingCoupen){
             return res.redirect(`/admin/coupen-page?msg=Coupen already exist.`)
         }
@@ -108,25 +108,25 @@ const applyCoupon = async (req, res) =>{
     try {
         const couponCode = req.body.couponCode;
         const subtotal = req.body.finalTotal;
-        console.log('subTotal:', subtotal);
-        console.log('couponCode:', couponCode)
+        // console.log('subTotal:', subtotal);
+        // console.log('couponCode:', couponCode)
         const coupon = await Coupen.findOne({couponCode: couponCode});
-        console.log('coupon.coupenDiscountPercentage:', coupon.coupenDiscountPercentage)
-        console.log('coupon:', coupon)
+        // console.log('coupon.coupenDiscountPercentage:', coupon.coupenDiscountPercentage)
+        // console.log('coupon:', coupon)
         if(!coupon){
-            console.log('! no coupen')
+            // console.log('! no coupen')
             return res.json({success: false, message: 'Invalid coupon code...😶‍🌫️'});
         }
 
         const todayDate =  new Date();
         if(todayDate > coupon.endAt){
-            console.log('! no failed the today date')
+            // console.log('! no failed the today date')
             return res.json({success: false, message: 'Invalid coupen You used..'});
         }
 
         
         if(subtotal < coupon.minPrice){
-            console.log('! no subtotal < coupon.minPrice')
+            // console.log('! no subtotal < coupon.minPrice')
             return res.json({
                 success: false,
                 message: ' Minimum Price is not mathc you enter Coupon code...'
@@ -135,8 +135,8 @@ const applyCoupon = async (req, res) =>{
 
         const discount = Math.ceil(subtotal * coupon.coupenDiscountPercentage) / 100;
         const newSubtotal = Math.ceil(subtotal - discount);
-        console.log('discount:', discount);
-        console.log('newSubtotal:', newSubtotal)
+        // console.log('discount:', discount);
+        // console.log('newSubtotal:', newSubtotal)
         req.session.discount = discount;
         req.session.discountPercentage = coupon.coupenDiscountPercentage;
         req.session.newSubtotal = Math.ceil(newSubtotal);
@@ -162,7 +162,7 @@ const removeCoupon = async (req, res) => {
         const subTotal = req.body.subTotal
         req.session.newSubtotal = subTotal;
         req.session.discount = 0;
-        console.log('defultSubtotal:', subTotal)
+        // console.log('defultSubtotal:', subTotal)
 
         res.json({
             success: true,
@@ -180,8 +180,6 @@ const getCouponList = async (req, res) => {
         const userId = req.session.userId;
         const coupons = await Coupen.find({});
         
-
-
         res.render('coupon-list', {
             coupons,
             userId

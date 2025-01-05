@@ -26,18 +26,18 @@ const forgotEmailValid = async (req, res) => {
     try {
         const { email } = req.body;
         const findUser = await User.findOne({ email: email });
-        
+
         if (!findUser) {
             return res.json({ success: false, message: 'Email not registered.' });
         }
 
         const otp = generatorOtp();
-        
-       
+
+
         req.session.userOtp = otp;
         req.session.email = email;
-        req.session.otpTimestamp = Date.now(); 
-        
+        req.session.otpTimestamp = Date.now();
+
         console.log('Session after storing OTP:', {
             email: req.session.email,
             otp: req.session.userOtp,
@@ -45,22 +45,22 @@ const forgotEmailValid = async (req, res) => {
         });
 
         const emailSent = await nodeMailer(email, otp, 'Password Reset Request', 'Your OTP for resetting your password is:');
-        
+
         if (!emailSent) {
-            return res.json({ 
-                success: false, 
-                message: 'Failed to send OTP. Please try again.' 
+            return res.json({
+                success: false,
+                message: 'Failed to send OTP. Please try again.'
             });
         }
 
-        
+
         res.render('forgot-password-otp');
-        
+
     } catch (error) {
         console.error('Error in forgotEmailValid:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'An error occurred while processing your request.' 
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while processing your request.'
         });
     }
 };
@@ -70,7 +70,7 @@ const forgotEmailValid = async (req, res) => {
 
 const getotp = async (req, res) => {
     try {
-        res.render('forgot-password-otp',{message: ""});
+        res.render('forgot-password-otp', { message: "" });
     } catch (error) {
         console.log(error);
     }
@@ -78,9 +78,9 @@ const getotp = async (req, res) => {
 
 const verifyOtpAndRedirect = async (req, res) => {
     try {
-        const otp  = req.body.otp;
+        const otp = req.body.otp;
         console.log(req.body)
-        console.log("otp",otp)
+        console.log("otp", otp)
         console.log('Verification attempt:', {
             receivedOtp: otp,
             sessionOtp: req.session.userOtp,
@@ -88,7 +88,7 @@ const verifyOtpAndRedirect = async (req, res) => {
             timestamp: req.session.otpTimestamp
         });
 
-        // Check if session exists
+
         if (!req.session.userOtp || !req.session.email) {
             return res.status(400).json({
                 success: false,
@@ -96,20 +96,20 @@ const verifyOtpAndRedirect = async (req, res) => {
             });
         }
 
-       
+
         const otpAge = Date.now() - req.session.otpTimestamp;
         if (otpAge > 15 * 60 * 1000) {
-            // Clear expired OTP from session
+
             delete req.session.userOtp;
             delete req.session.otpTimestamp;
-            
+
             return res.status(400).json({
                 success: false,
                 message: 'OTP has expired. Please request a new one.'
             });
         }
 
-        // Ensure both OTPs are strings and compare
+
         const sessionOtp = req.session.userOtp;
         const submittedOtp = String(otp);
 
@@ -118,16 +118,16 @@ const verifyOtpAndRedirect = async (req, res) => {
                 submitted: submittedOtp,
                 session: sessionOtp
             });
-            
-            return res.status(400).render('forgot-password-otp', 
-                {message: 'Invalid OTP'}
+
+            return res.status(400).render('forgot-password-otp',
+                { message: 'Invalid OTP' }
             );
         }
 
-      
+
         req.session.otpVerified = true;
-        
-     
+
+
         res.render('new-password', { email: req.session.email });
 
     } catch (error) {
@@ -142,7 +142,7 @@ const verifyOtpAndRedirect = async (req, res) => {
 const resetPassword = async (req, res) => {
     try {
         const email = req.session.email;
-        
+
         if (!email) {
             return res.status(400).json({
                 success: false,
@@ -155,16 +155,16 @@ const resetPassword = async (req, res) => {
         req.session.otpTimestamp = Date.now();
 
         const emailSent = await nodeMailer(email, otp, 'Password Reset Request', 'Your new OTP for resetting your password is:');
-        
+
         if (emailSent) {
-            res.json({ 
-                success: true, 
-                message: 'New OTP sent successfully.' 
+            res.json({
+                success: true,
+                message: 'New OTP sent successfully.'
             });
         } else {
-            res.json({ 
-                success: false, 
-                message: 'Failed to send new OTP. Please try again.' 
+            res.json({
+                success: false,
+                message: 'Failed to send new OTP. Please try again.'
             });
         }
 
@@ -178,32 +178,28 @@ const resetPassword = async (req, res) => {
 };
 
 
-const saveNewPassword = async (req, res) =>{
-    const {newPassword, confirmPassword} = req.body
+const saveNewPassword = async (req, res) => {
+    const { newPassword, confirmPassword } = req.body
     try {
         const findEmail = req.session.email;
-        console.log(findEmail);
-        console.log({newPassword, confirmPassword});
-       if(!newPassword || !confirmPassword){
-        console.log('All fields are required...');
-        return res.status(400).render('login',{error:'All fields are required'});
-       }
+        if (!newPassword || !confirmPassword) {
+            return res.status(400).render('login', { error: 'All fields are required' });
+        }
 
-      
 
-       const user = await User.findOne({email: findEmail});
-       console.log(user);
-       if (!user) {
-        return res.status(401).render('login', { error: 'Invalid email or password' });
-    }
 
-    const hashePassword = await bcrypt.hash(newPassword, 10);
+        const user = await User.findOne({ email: findEmail });
+        if (!user) {
+            return res.status(401).render('login', { error: 'Invalid email or password' });
+        }
 
-    user.password = hashePassword;
-    await user.save();
+        const hashePassword = await bcrypt.hash(newPassword, 10);
 
-    req.session.destroy();
-    return res.redirect('/login');
+        user.password = hashePassword;
+        await user.save();
+
+        req.session.destroy();
+        return res.render('forgotPasswordSuccess');
 
     } catch (error) {
         console.log(error);

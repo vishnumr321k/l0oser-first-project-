@@ -23,7 +23,9 @@ const loadSignin = async (req, res) => {
         if(req.session.adminId){
             res.redirect("/admin/dashboard")
         }
-        res.render('admin-login');
+        res.render('admin-login', {
+            passErr: req.query.passErr || ''
+        });
     } catch (error) {
         console.log(`The signin not loaded and error seen ${error}`);
         res.status(404).send('Page not Found');
@@ -329,8 +331,9 @@ const adminSignin = async(req, res) =>{
 
         if(!is_Match){
             console.log('Incorrect Password...🕺');
-            return res.status(401).send('Authentication Failed...😒');
-           
+            return res.render('admin-login', {
+                passErr: 'Invalid Username and Password...'
+            });
         }
         req.session.adminId =  admin._id;
 
@@ -418,7 +421,7 @@ const orderDetails = async (req, res) => {
 
 const InventorySection = async (req, res) =>{
     try {
-        const {page = 1, limit= 3} = req.query;
+        const {page = 1, limit= 10} = req.query;
 
         const statingIndex = (page - 1) * limit;
 
@@ -426,7 +429,7 @@ const InventorySection = async (req, res) =>{
 
         
 
-        const products = await Product.find({}).populate('category').skip(statingIndex).limit(Number(limit));
+        const products = await Product.find({}).populate('category').sort({createAt: -1}).skip(statingIndex).limit(Number(limit));
         console.log('The inventory Loaded...😍');
         res.render('Inventory', 
             {
@@ -468,7 +471,7 @@ const updateStock = async (req, res) => {
 const updateOrderStatus = async (req, res) =>{
     try {
         const {orderId, orderStatus} = req.body;
-        console.log(orderId, orderStatus);
+        // console.log(orderId, orderStatus);
 
         const order = await Order.findById(orderId)
 
@@ -500,7 +503,7 @@ const delateOrder = async (req, res) =>{
     try {
        
         const {orderId} = req.params;
-        console.log('orderId:', orderId);
+        // console.log('orderId:', orderId);
 
         if(!orderId){
             alert('There is no Order Id..🤨');

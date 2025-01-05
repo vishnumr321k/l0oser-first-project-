@@ -3,8 +3,8 @@
 
  const customerInfo = async (req, res) => {
     try {
-        let search = req.query.search || ''; // Default to empty string
-        let page = parseInt(req.query.page) || 1; // Default to page 1
+        let search = req.query.search || ''; 
+        let page = parseInt(req.query.page) || 1;
         const limit = 10;
 
         const filter = {
@@ -15,12 +15,13 @@
             ]
         };
 
-        // Get user data for the current page
+       
         const userData = await User.find(filter)
+            .sort({creatAt: -1})
             .limit(limit)
             .skip((page - 1) * limit);
 
-        // Get total count of matching documents
+        
         const count = await User.countDocuments(filter);
 
         res.render('customers', {

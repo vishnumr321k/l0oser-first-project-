@@ -8,6 +8,7 @@ const Address = require('../model/user/addressSchema');
 const Cart = require('../model/user/cartSchema');
 const Order = require('../model/user/orderSchema');
 const { json } = require('body-parser');
+const Wallet = require('../model/user/walletSchema');
 
 
 
@@ -24,7 +25,9 @@ const sendOtp = async (email, otp) => {
     try {
         console.log(`Sending OTP to: ${email}, OTP: ${otp}`);
         const isSent = await nodeMailer(email, otp);
-        if (!isSent) console.log('Failed to send OTP');
+        if (!isSent){
+            console.log('Failed to send OTP');
+        }
     } catch (error) {
         console.error('Error sending OTP:', error.message);
     }
@@ -38,7 +41,7 @@ const loadLogin = async (req, res) => {
         if (user) {
             res.redirect('/home');
         } else {
-            console.log('The login page is loaded...🕺');
+            // console.log('The login page is loaded...🕺');
             res.render('login', { error: null, passErr });
         }
     } catch (error) {
@@ -50,7 +53,7 @@ const loadLogin = async (req, res) => {
 
 const loadSignup = async (req, res) => {
     try {
-        console.log('The Sign up page is loaded...🕺🕺');
+        // console.log('The Sign up page is loaded...🕺🕺');
         res.render('signup', { error: null });
     } catch (error) {
         console.log('The signup page is note loaded Error', error);
@@ -63,10 +66,11 @@ const loadHomepage = async (req, res) => {
         const userId = req.session.userId;
         const google = req.session.googleId;
 
+    
         if (userId) {
             const user = await User.findById(userId);
             if (user.isBlocked) {
-                req.session.destroy(); // Clear the session
+                req.session.destroy();
                 return res.redirect('/login?passErr=Your account has been blocked.');
             }
         }
@@ -74,12 +78,33 @@ const loadHomepage = async (req, res) => {
         if (google) {
             const googleUser = await User.findOne({ googleId: google });
             if (googleUser.isBlocked) {
-                req.session.destroy(); // Clear the session
+                req.session.destroy();
                 return res.redirect('/login?passErr=Your account has been blocked.');
             }
         }
 
-        // Regular homepage logic
+        const gouser = await User.findOne({ googleId: google });
+        // console.log(gouser);
+
+        let googleUser = null;
+        if (gouser) {
+            googleUser = gouser._id;
+            // console.log(googleUser);
+        }
+
+        
+        let wallet = await Wallet.findOne({ userId: userId || googleUser });
+        if (!wallet && (userId || googleUser)) {
+            
+            const newWallet = new Wallet({
+                userId: userId || googleUser,
+                balance: 0,
+                transactions: []
+            });
+            wallet = await newWallet.save();
+        }
+
+       
         const categories = await Category.find({});
         const productData = await Product.find({
             isBlocked: false,
@@ -96,7 +121,7 @@ const loadHomepage = async (req, res) => {
         }
 
         let productCount = 0;
-        const cart = await Cart.findOne({ userId });
+        const cart = await Cart.findOne({ userId: userId || googleUser });
         if (cart) {
             productCount = cart.products.length;
         }
@@ -105,8 +130,10 @@ const loadHomepage = async (req, res) => {
             users: userData,
             products: productData,
             google: googleData,
-            productCount
+            productCount,
+            wallet: wallet 
         });
+
     } catch (error) {
         console.log('Error loading homepage:', error);
         res.status(404).send('Page not found...😶‍🌫️');
@@ -142,7 +169,7 @@ const userSignup = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
-    console.log(email)
+    // console.log(email)
     const storedOtpData = otpStore[email];
     if (!storedOtpData || Date.now() > storedOtpData.otpExpiryTime) {
         return res.status(400).render('otp-verification', { message: 'OTP expired' });
@@ -151,7 +178,7 @@ const verifyOtp = async (req, res) => {
     if (otp !== storedOtpData.otp) {
         return res.status(400).render('otp-verification', { message: 'Invalid OTP' });
     }
-    console.log(storedOtpData.name)
+    // console.log(storedOtpData.name)
     try {
         const passwordHash = await bcrypt.hash(storedOtpData.password, 10);
         const newUser = new User({
@@ -186,7 +213,7 @@ const resendOtp = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-            console.log('User not found for email:', email); // Log user not found
+            // console.log('User not found for email:', email); // Log user not found
             return res.status(404).render('otp-verification', {
                 error: 'User not found',
                 message: null,
@@ -261,11 +288,11 @@ const userLogout = async (req, res) => {
     try {
         req.session.destroy((err) => {
             if (err) {
-                console.log('Error destroying the section...');
+                // console.log('Error destroying the section...');
                 return res.status(500).send('Error loging out');
             }
             res.clearCookie('connect.sid');
-            console.log('User Loged Out sussessfully');
+            // console.log('User Loged Out sussessfully');
             res.redirect('/login');
         })
     } catch (error) {
@@ -278,11 +305,11 @@ const getProfile = async (req, res) => {
     try {
         const userId = req.session.userId;
         
-        console.log(userId)
+        // console.log(userId)
         const user = await User.findById(userId);
         const cart = await Cart.findOne({userId});
         const orders = await Order.find({userId: userId}).sort({lastUpdate: -1});
-        console.log('Order:', orders);
+        // console.log('Order:', orders);
        
         let productCount = cart ? cart.products.length : 0;
 
@@ -291,7 +318,7 @@ const getProfile = async (req, res) => {
         }
         
 
-        console.log('The user profile is loaded...😍');
+        // console.log('The user profile is loaded...😍');
         res.render('userProfile', { user , productCount, orders});
     } catch (error) {
         console.log('The error in user getprofile:', error);
@@ -325,7 +352,7 @@ const updateProfile = async (req, res) => {
 
 const addAddress = async (req, res) => {
     try {
-        console.log('dsnf')
+        // console.log('dsnf')
         const userId = req.session.userId;
         const user = await User.findById(userId);
         if (!user) {
@@ -343,7 +370,7 @@ const addAddress = async (req, res) => {
 const addAddressDate = async (req, res) => {
     try {
         const { addressType, Username, state, city, streetAddress, pincode, mobile, altMobile } = req.body;
-        console.log(req.body)
+        // console.log(req.body)
         const userId = req.session.userId;
 
         let errors = [];
@@ -374,7 +401,7 @@ const addAddressDate = async (req, res) => {
         if(errors.length > 0){
             return res.status(400).json({errors});
         }
-        console.log(errors)
+        // console.log(errors)
         const newAddress = new Address({
             userId: userId,
             addressType: addressType,
@@ -418,7 +445,7 @@ const loadEditAddress = async (req, res) => {
     try {
         const userId = req.session.userId;
         const addressId = req.query.addressId;
-        console.log(addressId)
+        // console.log(addressId)
         if (!userId) {
             return res.status(404).send('Page Not Found..🤨');
         }
@@ -439,7 +466,7 @@ const loadEditAddress = async (req, res) => {
             return res.status(404).send('Address not found.');
         }
 
-        console.log('Selected Address:', selectedAddress);
+        // console.log('Selected Address:', selectedAddress);
 
         
         res.render('edit-address', { address: selectedAddress, userId });
@@ -554,6 +581,24 @@ const updatePasswordInProfile = async (req, res) => {
     }
 };
 
+const aboutPage = async (req, res) => {
+    try {
+        // console.log('About Page is loaded');
+        res.render('aboutPage');
+    } catch (error) {
+        console.log('aboutPage:', error);
+    }
+}
+
+const contactDetails = async (req, res) => {
+    try {
+        // console.log('About Page is loaded');
+        res.render('contactPage');
+    } catch (error) {
+        console.log('aboutPage:', error);
+    }
+}
+
 
 module.exports = {
     loadLogin,
@@ -572,5 +617,7 @@ module.exports = {
     editAddress,
     deleteAddress,
     orderList,
-    updatePasswordInProfile
+    updatePasswordInProfile,
+    aboutPage,
+    contactDetails
 }

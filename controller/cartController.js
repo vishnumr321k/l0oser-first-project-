@@ -122,7 +122,7 @@ const getUserCart = async (req, res) => {
 
     
     
-    console.log('CartProduct:',cartProduct)
+    // console.log('CartProduct:',cartProduct)
    
     if (!cartProduct ) {
       return res.render('user-cart', {
@@ -185,19 +185,19 @@ const updateQuantity = async (req, res) => {
           return res.status(400).json({ success: false, message: 'User not logged in.' });
       }
 
-      console.log('userId:', userId);
-      console.log('{ productId, change }:', { productId, change });
+      // console.log('userId:', userId);
+      // console.log('{ productId, change }:', { productId, change });
 
       
       const cart = await Cart.findOne({ userId }).populate('products.productId');
-      console.log('cart:', cart);
+      // console.log('cart:', cart);
 
       if (!cart) {
           return res.status(404).json({ success: false, message: 'Cart not found.' });
       }
 
       const product = cart.products.find(item => item.productId._id.toString() === productId);
-      console.log('product:', product);
+      // console.log('product:', product);
 
       if (!product) {
           return res.status(404).json({ success: false, message: 'Product not found in cart.' });
@@ -240,8 +240,8 @@ const addToCartDirect = async (req, res) => {
     const productId = req.body.productId;
     const userId = req.session.userId;
     const quantity = req.body.quantity 
-    const totalPrice = req.body.totalPrice;
-    console.log('quantity:', quantity);
+    // const totalPrice = req.body.totalPrice;
+    // console.log('quantity:', quantity);
     if (!userId) {
       return res.redirect('/login');
     }
@@ -262,7 +262,7 @@ const addToCartDirect = async (req, res) => {
 
       if (exitingItemIndex >= 0) {
         const exitingQuantity = cart.products[exitingItemIndex].quantity;
-        console.log(cart.products[exitingItemIndex].quantity)
+        // console.log(cart.products[exitingItemIndex].quantity)
 
         if (exitingQuantity + quantity <= 5) {
           cart.products[exitingItemIndex].quantity += quantity;

@@ -49,6 +49,10 @@ const userSchema = new Schema({
     selectedAddressIndex: { 
         type: Number, 
         default: null
+    },
+    creatAt:{
+        type: Date,
+        default: Date.now()
     }
 
 });
