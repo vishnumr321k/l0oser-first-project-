@@ -54,6 +54,9 @@ app.use((req, res, next) => {
 app.use('/admin', adminRouter);
 app.use('/', userRouter);
 
+app.use((req, res, next) => {
+    res.status(404).redirect('/somthing-wrong');  // Render your custom 404 page here
+});
 
 app.use(passport.initialize());
 app.use(passport.session());

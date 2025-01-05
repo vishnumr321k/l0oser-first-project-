@@ -33,6 +33,7 @@ router.get('/logout', userControler.userLogout);
 router.post('/resend-otp', userControler.resendOtp);
 router.get('/about-page', userControler.aboutPage);
 router.get('/contact-page', userControler.contactDetails);
+router.get('/somthing-wrong', userControler.error404page)
 
 
 router.get('/auth/google', passport.authenticate('google', {scope : ['profile', 'email']}));

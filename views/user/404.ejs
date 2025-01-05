@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        /* CSS styles for the black and white 404 page */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .error-content {
+            text-align: center;
+            padding: 50px 0;
+        }
+        .error-title {
+            font-size: 150px;
+            color: #000000;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: -10px;
+            animation: glitch 3s infinite;
+        }
+        .error-subtitle {
+            font-size: 28px;
+            color: #333333;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+        .error-text {
+            font-size: 18px;
+            color: #666666;
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .back-home {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background-color: #000000;
+            color: #ffffff;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+        .back-home:hover {
+            background-color: #ffffff;
+            color: #000000;
+            box-shadow: 0 0 0 2px #000000;
+        }
+        .divider {
+            width: 50px;
+            height: 2px;
+            background-color: #000000;
+            margin: 30px auto;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header placeholder -->
+    <%- include('../partials/user/header3') %>
+
+    <div class="container">
+        <div class="error-content">
+            <h1 class="error-title">404</h1>
+            <div class="divider"></div>
+            <h2 class="error-subtitle">Page Not Found</h2>
+            <p class="error-text">We're sorry, but the page you're looking for seems to have vanished into the digital void. It might have been moved, deleted, or never existed in the first place.</p>
+            <a href="/home" class="back-home">Return to Homepage</a>
+        </div>
+    </div>
+
+    <!-- Footer placeholder -->
+    <%- include('../partials/user/footer2') %>
+</body>
+</html>

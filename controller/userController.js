@@ -599,6 +599,13 @@ const contactDetails = async (req, res) => {
     }
 }
 
+const error404page = async (req, res) => {
+    try {
+        res.render('404');
+    } catch (error) {
+        console.log('error404page:', error);
+    }
+}
 
 module.exports = {
     loadLogin,
@@ -619,5 +626,6 @@ module.exports = {
     orderList,
     updatePasswordInProfile,
     aboutPage,
-    contactDetails
+    contactDetails,
+    error404page
 }
