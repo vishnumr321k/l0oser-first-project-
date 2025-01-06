@@ -19,7 +19,7 @@ const getProductList = async (req, res) => {
         return res.status(404).send('Page not found..');
        }
         
-       res.render('productdetails', {
+       res.render('productDetails', {
         product,
         recomProducts,
         productId,
