@@ -304,7 +304,10 @@ const userLogout = async (req, res) => {
 const getProfile = async (req, res) => {
     try {
         const userId = req.session.userId;
-        
+      
+        if(!userId){
+            return res.redirect('/login');
+        }
         // console.log(userId)
         const user = await User.findById(userId);
         const cart = await Cart.findOne({userId});
@@ -444,6 +447,7 @@ const addAddressDate = async (req, res) => {
 const loadEditAddress = async (req, res) => {
     try {
         const userId = req.session.userId;
+        
         const addressId = req.query.addressId;
         // console.log(addressId)
         if (!userId) {
@@ -552,6 +556,13 @@ const orderList = async (req, res) => {
 const updatePasswordInProfile = async (req, res) => {
     try {
         const userId = req.session.userId;
+
+        
+        
+        if(!userId){
+            return res.redirect('/login');
+        }
+
         const { currentPassword, newPassword } = req.body;
 
         console.log('Received:', { currentPassword, newPassword });
@@ -583,6 +594,11 @@ const updatePasswordInProfile = async (req, res) => {
 
 const aboutPage = async (req, res) => {
     try {
+        const userId = req.session.userId;
+        
+        if(!userId){
+            return res.redirect('/login');
+        }
         // console.log('About Page is loaded');
         res.render('aboutPage');
     } catch (error) {
@@ -592,6 +608,11 @@ const aboutPage = async (req, res) => {
 
 const contactDetails = async (req, res) => {
     try {
+        const userId = req.session.userId;
+        
+        if(!userId){
+            return res.redirect('/login');
+        }
         // console.log('About Page is loaded');
         res.render('contactPage');
     } catch (error) {

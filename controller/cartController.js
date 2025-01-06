@@ -3,6 +3,7 @@ const Product = require('../model/Admin/productSchema');
 const User = require('../model/user/UserSchema');
 
 
+
 // const getCartPage = async (req, res) => {
 //     try {
 //       const userId = req.session.userId;
@@ -130,6 +131,7 @@ const getUserCart = async (req, res) => {
         cartProduct: null ,
         totalAmount: 0,
         message: 'Your cart is empty!',
+        products:[]
       });
     }
 

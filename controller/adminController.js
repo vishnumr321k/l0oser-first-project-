@@ -45,7 +45,7 @@ const loadDasheBoard = async (req, res) => {
         const count = orders.length;
         const averageOrderValue = count > 0 ? (totalRevenue / count).toFixed(2) : 0;
 
-        res.render('dashboard', {
+        res.render('+', {
             salesData,
             products,
             categories,
