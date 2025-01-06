@@ -26,6 +26,7 @@ router.use((req, res, next) =>{
 router.get('/login', userControler.loadLogin);
 router.get('/signup', userControler.loadSignup);
 router.get('/home',userControler.loadHomepage);
+router.get('/',userControler.loadHomepage);
 router.post('/signup',userControler.userSignup);
 router.post('/verify-otp', userControler.verifyOtp);
 router.post('/login',userControler.userLogin);
