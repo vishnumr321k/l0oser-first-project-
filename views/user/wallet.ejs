@@ -92,6 +92,8 @@
 <script>
     function addMoneyOnWallet() {
           const amount = parseInt(document.getElementById('walletAmount').value);
+
+          
           console.log('amount:', amount);
             fetch('/add-money-wallet', {
                 method: 'POST',

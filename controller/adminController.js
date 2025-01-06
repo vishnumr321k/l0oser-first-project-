@@ -370,9 +370,9 @@ const orderLists = async (req, res) => {
 
         const startingIndex = (page - 1) * limit;
 
-        const totalOrder = await Order.countDocuments();
+        const totalOrder = await Order.countDocuments({userId: { $ne: null}});
 
-        let query = {};
+        let query = {userId: {$ne: null}};
 
         if(orderSearch){
             query = {
@@ -389,7 +389,7 @@ const orderLists = async (req, res) => {
         
 
         const orders = await Order.find(query).populate('userId').populate('products.productId').sort({lastUpdate:-1}).skip(startingIndex).limit(Number(limit));
-        
+      
 
         console.log('The orderlist is loadede...🤩');
         res.render('order-list', 

@@ -52,8 +52,8 @@
                     <tbody>
                         <tr>
                             <td><%= order.orderId %></td>
-                            <td><b><%= order.userId.name %></b></td>
-                            <td><%= order.userId.email %></td>
+                            <td><b><%= order.userId ? order.userId.name : 'Deleted User' %></b></td>
+                            <td><%= order.userId ? order.userId.email : 'N/A' %></td>
                             <td>₹<%= order.totalAmount %></td>
                             <%if(order.status === 'Pending'){%>
                             <td><span class="badge rounded-pill alert-warning" ><%= order.status %></span></td>

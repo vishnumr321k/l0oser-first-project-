@@ -608,7 +608,15 @@
                     }
                 }else if(selectPaymentMethod === 'wallet'){
                     const walletBalance = document.getElementById('walletBalance')
-                    document.getElementById('placeorderform').submit();
+                    if(walletBalance <= 0){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Insufficient balance in Wallet...'
+                        })
+                    }else{
+                        document.getElementById('placeorderform').submit();
+                    }
+                    
                 }
             }
 
