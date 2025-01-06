@@ -240,7 +240,7 @@ const addToCartDirect = async (req, res) => {
     const productId = req.body.productId;
     const userId = req.session.userId;
     const quantity = req.body.quantity 
-    // const totalPrice = req.body.totalPrice;
+    const totalPrice = req.body.totalPrice;
     // console.log('quantity:', quantity);
     if (!userId) {
       return res.redirect('/login');
