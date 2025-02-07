@@ -608,14 +608,10 @@
                     }
                 }else if(selectPaymentMethod === 'wallet'){
                     const walletBalance = document.getElementById('walletBalance')
-                    if(walletBalance <= 0){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Insufficient balance in Wallet...'
-                        })
-                    }else{
+                    console.log('walletBalance:', )
+                   
                         document.getElementById('placeorderform').submit();
-                    }
+                    
                     
                 }
             }
